@@ -14,18 +14,19 @@ import Link from "next/link";
 
 import type { QuebecDictionary } from "./quebec-dictionary";
 
+/** Doit rester aligné sur `app/parent/page.tsx` : `icône|libellé|href`. */
 const links = [
-  "⌂|Accueil",
-  "☷|Plan de la semaine",
-  "▣|Cours",
-  "✦|Assistant IA",
-  "◌|Communauté",
-  "▤|Portfolio",
-  "◫|Parcours Québec",
-  "$|Budget",
+  "⌂|Accueil|/parent",
+  "☷|Plan de la semaine|/parent/plan",
+  "▣|Cours|/parent/cours",
+  "✦|Assistant IA|#",
+  "◌|Communauté|#",
+  "▤|Portfolio|#",
+  "◫|Parcours Québec|/parent/parcours-quebec",
+  "$|Budget|#",
 ];
 
-const PARCOURS_INDEX = 6;
+const ACTIVE_HREF = "/parent/parcours-quebec";
 
 export function QuebecSidebar({ dictionary }: { dictionary: QuebecDictionary }) {
   return (
@@ -38,15 +39,9 @@ export function QuebecSidebar({ dictionary }: { dictionary: QuebecDictionary }) 
         />
       </Link>
       <div className="side-label">{dictionary.sidebar.section}</div>
-      {links.map((item, index) => {
-        const [icon, label] = item.split("|");
-        const isActive = index === PARCOURS_INDEX;
-        const href =
-          index === 0
-            ? "/parent"
-            : index === PARCOURS_INDEX
-              ? "/parent/parcours-quebec"
-              : "#";
+      {links.map((item) => {
+        const [icon, label, href] = item.split("|");
+        const isActive = href === ACTIVE_HREF;
         return (
           <Link
             key={label}
