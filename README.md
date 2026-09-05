@@ -58,6 +58,10 @@ npm run test:e2e
 valide et approuve un devoir; élève qui monte l'échelle d'aide sans atteindre la solution —
 en français et en anglais, sur le fournisseur `mock` et sans aucune clé.
 
+Ces trois commandes tournent aussi automatiquement sur chaque pull request
+(`.github/workflows/ci.yml`). En cas d'échec des parcours navigateur, le rapport Playwright
+est joint à l'exécution GitHub Actions.
+
 ## Architecture
 
 Lire d'abord :

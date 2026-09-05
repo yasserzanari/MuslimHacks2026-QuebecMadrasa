@@ -18,7 +18,8 @@ export default defineConfig({
   // The journeys share one in-memory queue, so they must not race each other.
   workers: 1,
   fullyParallel: false,
-  reporter: process.env.CI ? "line" : "list",
+  // CI also writes an HTML report so a failed run can be downloaded and replayed.
+  reporter: process.env.CI ? [["line"], ["html", { open: "never" }]] : [["list"]],
   use: {
     baseURL: process.env.APP_BASE_URL ?? "http://localhost:3000",
     ...devices["Desktop Chrome"],
@@ -26,7 +27,9 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   webServer: {
-    command: "npm run build && npm run start",
+    // CI builds in its own step so a build failure is reported as a build failure.
+    // Locally the runner builds for you, so `npm run test:e2e` works from a clean checkout.
+    command: process.env.CI ? "npm run start" : "npm run build && npm run start",
     url: "http://localhost:3000/api/health",
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
