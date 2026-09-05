@@ -234,6 +234,18 @@ export default function ParcoursQuebecPage() {
           </span>
         </p>
 
+        <nav className="quebec-journey" aria-label={locale === "fr" ? "Étapes du parcours" : "Path steps"}>
+          <div className="quebec-journey-intro"><span className="quebec-journey-mark">01—06</span><strong>{locale === "fr" ? "Votre chemin, étape par étape" : "Your path, step by step"}</strong><span>{locale === "fr" ? "Ouvrez une étape pour comprendre quoi faire." : "Open a step to understand what to do."}</span></div>
+          {[
+            ["01", locale === "fr" ? "Situation" : "Situation", "situation", "⌂"],
+            ["02", locale === "fr" ? "Avis de déclaration" : "Notice of intent", "avis-declaration", "↗"],
+            ["03", locale === "fr" ? "Suivi annuel" : "Annual follow-up", "suivi", "◷"],
+            ["04", locale === "fr" ? "Obligations" : "Requirements", "obligations", "✓"],
+            ["05", locale === "fr" ? "Projet d’apprentissage" : "Learning project", "projet", "✎"],
+            ["06", locale === "fr" ? "Exporter" : "Export", "export", "↓"],
+          ].map(([number, label, slug, icon]) => <a className="quebec-journey-card" key={slug} href={`/parent/parcours-quebec/${slug}`}><span>{number}</span><i>{icon}</i><strong>{label}</strong><em>→</em></a>)}
+        </nav>
+
         <QuebecUrgentCard
           urgent={urgent}
           second={second}
