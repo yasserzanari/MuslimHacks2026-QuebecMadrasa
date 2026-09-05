@@ -1,5 +1,6 @@
 export type FamilyProfile = {
   province: "QC";
+  cssId: string;
   familyStatus: "couple" | "single";
   annualIncome: number;
   children: Array<{ age: number; disabilityTaxCredit: boolean }>;
@@ -7,6 +8,35 @@ export type FamilyProfile = {
   childcarePaid: boolean;
   homeschoolType: "home" | "private";
 };
+
+export type SchoolServiceCenter = { id: string; name: string; region: string; type: "francophone" | "anglophone"; url: string };
+export type FreeSchoolService = { id: string; name: string; modality: string; condition: string; url: string };
+
+export const schoolServiceCenters: SchoolServiceCenter[] = [
+  { id: "montreal", name: "Centre de services scolaire de Montréal", region: "Montréal", type: "francophone", url: "https://www.cssdm.gouv.qc.ca" },
+  { id: "pointe-ile", name: "Centre de services scolaire de la Pointe-de-l’Île", region: "Montréal-Est", type: "francophone", url: "https://www.csspi.ca" },
+  { id: "marguerite-bourgeoys", name: "Centre de services scolaire Marguerite-Bourgeoys", region: "Montréal-Ouest", type: "francophone", url: "https://www.cssmb.gouv.qc.ca" },
+  { id: "laval", name: "Centre de services scolaire de Laval", region: "Laval", type: "francophone", url: "https://www.csslaval.gouv.qc.ca" },
+  { id: "marie-victorin", name: "Centre de services scolaire Marie-Victorin", region: "Longueuil / Rive-Sud", type: "francophone", url: "https://www.cssmv.gouv.qc.ca" },
+  { id: "sir-wilfrid-laurier", name: "Commission scolaire Sir-Wilfrid-Laurier", region: "Laval / Laurentides", type: "anglophone", url: "https://www.swlauriersb.qc.ca" },
+  { id: "english-montreal", name: "Commission scolaire English-Montréal", region: "Montréal", type: "anglophone", url: "https://www.emsb.qc.ca" },
+  { id: "lester-b-pearson", name: "Commission scolaire Lester-B.-Pearson", region: "Montréal-Ouest", type: "anglophone", url: "https://www.lbpsb.qc.ca" },
+  { id: "trois-lacs", name: "Centre de services scolaire des Trois-Lacs", region: "Vaudreuil-Soulanges", type: "francophone", url: "https://www.cssst.gouv.qc.ca" },
+  { id: "des-grandes-seigneuries", name: "Centre de services scolaire des Grandes-Seigneuries", region: "Montérégie", type: "francophone", url: "https://www.cssdgs.gouv.qc.ca" },
+];
+
+export const freeSchoolServices: FreeSchoolService[] = [
+  { id: "materials", name: "Manuels et matériel didactique", modality: "Sur demande, selon les modalités du CSS et la disponibilité.", condition: "Même matériel que celui fourni à l’école; disponibilité à confirmer.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "psychology", name: "Psychologie", modality: "Accès selon les besoins de l’enfant et les ressources disponibles.", condition: "Évaluation des besoins et modalités du CSS.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "psychoeducation", name: "Psychoéducation", modality: "Accès selon les besoins et la disponibilité du service.", condition: "Demande au CSS; aucune disponibilité garantie.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "special-education", name: "Éducation spécialisée", modality: "Soutien complémentaire selon les modalités locales.", condition: "Besoins de l’enfant évalués par le CSS.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "orthopedagogy", name: "Orthopédagogie", modality: "Service accessible selon les besoins et la capacité du CSS.", condition: "Coordination avec la personne-ressource du CSS.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "speech", name: "Orthophonie", modality: "Accès selon les besoins et les ressources disponibles.", condition: "Demande et analyse des besoins; aucune garantie de délai.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "guidance", name: "Information et orientation scolaire et professionnelle", modality: "Accompagnement du parcours scolaire et professionnel.", condition: "Modalités et prise de rendez-vous propres au CSS.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "library-support", name: "Soutien à l’utilisation de la bibliothèque", modality: "Accès aux ressources documentaires et à leur utilisation.", condition: "Selon les ressources et les règles du CSS.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "facilities", name: "Bibliothèque, laboratoires et installations", modality: "Accès possible aux bibliothèques, laboratoires, art, sport et informatique.", condition: "Sur demande, selon les modalités locales et la disponibilité.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien" },
+  { id: "exams", name: "Préparation aux épreuves ministérielles", modality: "Séances préparatoires gratuites organisées par le CSS ou la CS.", condition: "S’inscrire auprès du CSS/CS pour les épreuves concernées.", url: "https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/demarche-etapes" },
+];
 
 export type AidProgram = {
   id: string;
@@ -109,6 +139,10 @@ export function matchFinancialAid(profile: FamilyProfile) {
     if (!eligible && program.id === "childcare-credit") reason = "Indiquez des frais de garde admissibles et une activité de travail, d’études ou de recherche d’emploi.";
     return { ...program, eligible, reason, estimatedAmount: estimateAmount(program.id, profile) };
   });
+}
+
+export function servicesForCss(cssId: string) {
+  return { css: schoolServiceCenters.find((center) => center.id === cssId) ?? null, services: freeSchoolServices };
 }
 
 function estimateAmount(programId: string, profile: FamilyProfile) {
