@@ -116,7 +116,7 @@
 html { background: var(--cream); }
 body { margin: 0; color: var(--ink); background: var(--cream); font-family: Arial, Helvetica, sans-serif; }
 a { color: inherit; text-decoration: none; }
-button, input { font: inherit; }
+button, input, textarea, select { font: inherit; }
 button { cursor: pointer; }
 
 .public-shell { min-height: 100vh; overflow: hidden; background: radial-gradient(circle at 90% 10%, #d4f4dd 0, transparent 34%), var(--cream); }
@@ -255,4 +255,131 @@ button { cursor: pointer; }
   .dash-hero .button { margin-top: 20px; }
   .student-hero { display: block; }
   .mission-card { margin-top: 20px; }
+}
+
+/* ---------------------------------------------------------------------------
+   Homework Studio (parent / tutor / educator) — P06 + P07
+   Sidebar left, request tools in the centre, generation queue on the right.
+--------------------------------------------------------------------------- */
+
+.studio-top-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.studio-grid { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(280px, .8fr); gap: 15px; margin-top: 15px; align-items: start; }
+.studio-main { min-width: 0; }
+.studio-form { display: grid; gap: 18px; }
+.studio-form > h3 { margin: 0; font-size: 19px; }
+.studio-form > p { margin: 0; color: var(--muted); font-size: 13px; }
+.studio-fieldset { display: grid; gap: 14px; margin: 0; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: #fcfefc; }
+.studio-fieldset legend { padding: 0 8px; color: var(--forest-2); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.studio-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.studio-field { display: grid; gap: 6px; min-width: 0; font-size: 13px; }
+.studio-field > span { color: var(--ink); font-weight: 700; }
+.studio-field input[type="text"], .studio-field input:not([type]), .studio-field select, .studio-field textarea {
+  width: 100%; padding: 10px 11px; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--ink); font-size: 14px;
+}
+.studio-field textarea { resize: vertical; }
+.studio-field input[type="range"] { width: 100%; accent-color: var(--forest-2); }
+.studio-field:focus-within > span { color: var(--forest-2); }
+.studio-inline { display: flex; gap: 8px; align-items: center; }
+.studio-inline input { flex: 1; min-width: 0; }
+.studio-help { color: var(--muted); font-size: 12px; font-style: normal; line-height: 1.45; }
+.studio-issue { color: #b3402a; font-size: 12px; font-style: normal; font-weight: 700; }
+.studio-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.studio-chip { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 99px; background: white; font-size: 13px; cursor: pointer; transition: background .16s ease, border-color .16s ease; }
+.studio-chip:hover { border-color: var(--forest-2); }
+.studio-chip.selected { color: var(--forest); background: var(--mint-2); border-color: var(--forest-2); font-weight: 700; }
+.studio-chip input { accent-color: var(--forest); }
+.studio-switch { display: flex; gap: 10px; align-items: flex-start; font-size: 13px; cursor: pointer; }
+.studio-switch input { margin-top: 3px; accent-color: var(--forest); }
+.studio-switch span { display: grid; gap: 4px; }
+.studio-submit-row { display: flex; align-items: center; justify-content: flex-end; gap: 12px; flex-wrap: wrap; }
+.studio-ghost-button { padding: 9px 13px; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--forest); font-size: 13px; font-weight: 700; transition: border-color .16s ease, background .16s ease; }
+.studio-ghost-button:hover:not(:disabled) { border-color: var(--forest-2); background: var(--mint); }
+.studio-ghost-button:disabled, .button:disabled { opacity: .5; cursor: not-allowed; }
+.studio-alert { margin: 0; padding: 12px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; }
+.studio-alert-ok { color: var(--forest); background: var(--mint); }
+.studio-alert-error { color: #8d2f1c; background: #fdece7; }
+.studio-empty { margin: 14px 0; color: var(--muted); font-size: 13px; }
+
+.studio-queue { position: sticky; top: 20px; display: grid; gap: 12px; max-height: calc(100vh - 40px); overflow: auto; }
+.studio-queue h3 { margin: 0; }
+.studio-queue > p { margin: 0; color: var(--muted); font-size: 13px; }
+.studio-queue-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.studio-job { display: grid; gap: 8px; padding: 13px; border: 1px solid var(--line); border-radius: 14px; background: #fcfefc; }
+.studio-job-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.studio-job-head strong { font-size: 13px; line-height: 1.4; }
+.studio-job-error { padding: 8px 10px; border-radius: 9px; color: #8d2f1c; background: #fdece7; font-size: 12px; }
+.studio-job-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.tag.status-review_required { color: #8a6100; background: #fff1d1; }
+.tag.status-running { color: #2f79c5; background: #e6f2ff; }
+.tag.status-failed, .tag.status-rejected { color: #8d2f1c; background: #fdece7; }
+.tag.status-cancelled { color: var(--muted); background: #eef2ef; }
+
+.studio-review { display: grid; gap: 12px; }
+.studio-review h4 { margin: 12px 0 0; color: var(--forest); font-size: 14px; }
+.studio-review-title { margin: 4px 0 0; font-family: Georgia, serif; font-size: 26px; letter-spacing: -.03em; }
+.studio-list { margin: 0; padding-left: 20px; display: grid; gap: 9px; font-size: 13px; line-height: 1.55; }
+.studio-warnings li { color: #8d2f1c; }
+.studio-block { padding: 12px 14px; border-radius: 12px; background: var(--mint); }
+.studio-block strong { display: block; margin-bottom: 4px; color: var(--forest); font-size: 13px; }
+.studio-block p { margin: 0; color: #3d5449; font-size: 13px; line-height: 1.55; }
+
+/* ---------------------------------------------------------------------------
+   Lesson + AI tutor (student) — P14
+   The homework stays at the centre; the tutor is a right panel of ~28%.
+--------------------------------------------------------------------------- */
+
+.lesson-shell { min-height: 100vh; display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 28%); gap: 0; background: #f7fbf8; }
+.lesson-main { min-width: 0; padding: 28px 3.4vw 60px; }
+.lesson-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 22px; }
+.lesson-main h1 { margin: 6px 0 8px; font-family: Georgia, serif; font-size: 32px; letter-spacing: -.04em; }
+.lesson-goal { max-width: 640px; margin: 0 0 22px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+.lesson-question { display: grid; gap: 14px; padding: 24px; border: 1px solid var(--line); border-radius: 20px; background: white; box-shadow: 0 10px 26px rgba(23,74,59,.05); }
+.lesson-question-head { display: flex; align-items: center; gap: 10px; }
+.lesson-question h2 { margin: 0; font-family: Georgia, serif; font-size: 23px; line-height: 1.35; }
+.lesson-choices { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.lesson-choices button { width: 100%; padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; background: white; text-align: left; font-size: 14px; transition: border-color .16s ease, background .16s ease; }
+.lesson-choices button:hover { border-color: var(--forest-2); background: var(--mint); }
+.lesson-choices button.selected { color: var(--forest); background: var(--mint-2); border-color: var(--forest-2); font-weight: 700; }
+.lesson-question-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+
+.tutor-panel { display: flex; flex-direction: column; gap: 12px; padding: 22px 20px; border-left: 1px solid var(--line); background: white; position: sticky; top: 0; max-height: 100vh; overflow: auto; }
+.tutor-head h2 { margin: 0; font-size: 18px; }
+.tutor-head p { margin: 6px 0 0; color: var(--muted); font-size: 12.5px; line-height: 1.5; }
+.tutor-ladder { display: flex; flex-wrap: wrap; gap: 5px; }
+.tutor-step { padding: 5px 9px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); background: white; font-size: 10.5px; font-weight: 700; }
+.tutor-step.reached { color: var(--forest); background: var(--mint-2); border-color: var(--forest-2); }
+.tutor-step.locked { opacity: .45; text-decoration: line-through; }
+.tutor-meta { display: flex; gap: 14px; color: var(--muted); font-size: 12px; }
+.tutor-log { flex: 1; min-height: 180px; max-height: 42vh; overflow: auto; display: grid; align-content: start; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 14px; background: #fbfdfb; }
+.tutor-bubble { padding: 11px 13px; border-radius: 13px; background: var(--mint); }
+.tutor-bubble.student { background: #fff5d8; }
+.tutor-bubble strong { display: inline-block; margin-right: 8px; color: var(--forest); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+.tutor-bubble-level { padding: 2px 7px; border-radius: 99px; background: white; color: var(--forest-2); font-size: 10px; font-weight: 800; }
+.tutor-bubble p { margin: 7px 0 0; font-size: 13.5px; line-height: 1.55; }
+.tutor-notice { display: block; margin-top: 7px; color: #7a6427; font-size: 12px; font-style: normal; }
+.tutor-help-buttons { display: grid; gap: 7px; }
+.tutor-voice-row { display: grid; gap: 9px; }
+.tutor-voice-row .button { width: 100%; }
+.tutor-footer { display: grid; gap: 8px; padding-top: 12px; border-top: 1px solid var(--line); }
+
+@media (max-width: 1100px) {
+  .studio-grid { grid-template-columns: 1fr; }
+  .studio-queue { position: static; max-height: none; }
+}
+
+@media (max-width: 900px) {
+  .lesson-shell { grid-template-columns: 1fr; }
+  /* The tutor never disappears on mobile: it moves below the homework, still reachable. */
+  .tutor-panel { position: static; max-height: none; border-left: 0; border-top: 1px solid var(--line); }
+  .tutor-log { max-height: none; }
+}
+
+@media (max-width: 580px) {
+  .lesson-main { padding: 20px 16px 40px; }
+  .lesson-main h1 { font-size: 26px; }
+  .lesson-question { padding: 17px; }
+  .lesson-question h2 { font-size: 19px; }
+  .studio-fieldset { padding: 14px; }
+  .studio-submit-row { justify-content: stretch; }
+  .studio-submit-row .button { flex: 1; }
 }
