@@ -182,12 +182,12 @@ export default function ParcoursQuebecPage() {
       <QuebecSidebar dictionary={dictionary} />
 
       <section className="workspace quebec-workspace">
-        <div className="workspace-top">
-          <div>
-            <div className="eyebrow">{dictionary.pageEyebrow}</div>
-            <h1>{dictionary.pageTitle}</h1>
-          </div>
-          <div className="quebec-header-right">
+        {/*
+          La barre d'outils est sortie de `.workspace-top` : ce conteneur est un
+          flex sans retour à la ligne, appartenant au gabarit partagé, et le
+          commutateur de langue en débordait sous 580 px.
+        */}
+        <div className="quebec-toolbar">
             <div
               className="real-language-switch"
               role="group"
@@ -212,10 +212,16 @@ export default function ParcoursQuebecPage() {
                 English
               </button>
             </div>
-            <div className="profile">
-              <span className="avatar">AG</span>
-              <span>{dictionary.profileName}</span>
-            </div>
+          <div className="profile">
+            <span className="avatar">AG</span>
+            <span>{dictionary.profileName}</span>
+          </div>
+        </div>
+
+        <div className="workspace-top">
+          <div>
+            <div className="eyebrow">{dictionary.pageEyebrow}</div>
+            <h1>{dictionary.pageTitle}</h1>
           </div>
         </div>
 
