@@ -1,63 +1,53 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { getCourse } from "@/src/domain/course-catalog";
 
+type Exercise = { image: string; alt: string; prompt: string; answers: string[]; correct: string; hint: string; kind: "photo" | "bar" | "recipe" };
+
+const exercises: Exercise[] = [
+  { kind: "photo", image: "/ui/fractions-pizza-realistic.png", alt: "Pizza divisée en quatre parts égales", prompt: "Quelle fraction de la pizza est colorée ?", answers: ["1/4", "2/4", "3/4", "4/4"], correct: "3/4", hint: "Compte les parts colorées, puis regarde combien il y a de parts en tout." },
+  { kind: "photo", image: "/ui/fractions-apple-realistic.png", alt: "Pomme découpée en huit parts égales", prompt: "Il y a 8 parts égales. Si tu prends 3 parts, quelle fraction as-tu ?", answers: ["3/4", "3/8", "5/8", "8/3"], correct: "3/8", hint: "Le nombre du haut compte les parts choisies. Le nombre du bas compte toutes les parts." },
+  { kind: "bar", image: "/ui/fractions-pizza-realistic.png", alt: "Bande de quatre cases pour représenter une fraction", prompt: "Quelle fraction de la bande est remplie ?", answers: ["1/4", "2/4", "3/4", "4/4"], correct: "2/4", hint: "Il y a quatre cases en tout. Combien sont remplies en vert ?" },
+  { kind: "recipe", image: "/ui/fractions-pizza-realistic.png", alt: "Pizza utilisée comme exemple de recette", prompt: "Une recette demande 2 parts sur 4. Quelle fraction cela représente ?", answers: ["1/4", "2/4", "3/4", "4/4"], correct: "2/4", hint: "Le nombre du haut indique les parts utilisées; le nombre du bas indique le total." },
+  { kind: "bar", image: "/ui/fractions-pizza-realistic.png", alt: "Bande graduée pour comparer des fractions", prompt: "Quelle fraction est la plus grande ?", answers: ["1/4", "2/4", "3/4", "Elles sont égales"], correct: "3/4", hint: "Les dénominateurs sont les mêmes. Compare seulement les nombres du haut." },
+];
+
 const copy = {
-  fr: { back: "← Mes cours", goal: "Objectif du cours", activity: "Activité interactive", done: "✓ Terminé", inProgress: "En cours", try: "Essaie une idée avant de demander un indice.", reasoning: "Ton raisonnement", answerPlaceholder: "Écris ton idée ici…", check: "Vérifier mon raisonnement", saved: "Réponse enregistrée", hint: "Donner un indice", think: "Réfléchir", celebrate: "Célébrer", tutor: "Tuteur IA", tutorTitle: "Je t’aide à trouver", understood: "Objectif compris", ask: "Pose-moi une question", nextHint: "Indice suivant", example: "Exemple différent", compose: "Écris ou parle à ton tuteur…", note: "Je ne donne pas la réponse tout de suite : je t’aide à la trouver.", nextAction: "Avant de répondre, explique-moi ce que tu remarques." },
-  en: { back: "← My courses", goal: "Course objective", activity: "Interactive activity", done: "✓ Completed", inProgress: "In progress", try: "Try an idea before asking for a hint.", reasoning: "Your reasoning", answerPlaceholder: "Write your idea here…", check: "Check my reasoning", saved: "Answer saved", hint: "Give me a hint", think: "Think", celebrate: "Celebrate", tutor: "AI tutor", tutorTitle: "I’ll help you find it", understood: "Goal understood", ask: "Ask me a question", nextHint: "Next hint", example: "Different example", compose: "Write or talk to your tutor…", note: "I won’t give the answer right away: I’ll help you find it.", nextAction: "Before answering, explain what you notice." },
+  fr: { back: "← Mes cours", activity: "Mission interactive", tutor: "Tuteur IA", tutorTitle: "Je suis là pour t’aider", goal: "Objectif", hint: "Donne-moi un indice", explain: "Explique autrement", speak: "Appuie pour parler", listening: "Je t’écoute…", type: "Écris au tuteur…", tryAgain: "Je veux essayer", correct: "Super raisonnement !", wrong: "Presque ! Essaie encore.", next: "Question suivante", finished: "Mission terminée !" },
+  en: { back: "← My courses", activity: "Interactive mission", tutor: "AI tutor", tutorTitle: "I’m here to help", goal: "Goal", hint: "Give me a hint", explain: "Explain another way", speak: "Tap to speak", listening: "I’m listening…", type: "Write to your tutor…", tryAgain: "I want to try", correct: "Great reasoning!", wrong: "Almost! Try again.", next: "Next question", finished: "Mission complete!" },
 } as const;
 
 export default function StudentLessonPage() {
   const params = useParams<{ courseId: string }>();
   const course = getCourse(params.courseId) ?? getCourse("fractions")!;
   const [locale, setLocale] = useState<"fr" | "en">("fr");
-  const [helpLevel, setHelpLevel] = useState("question");
+  const [index, setIndex] = useState(0);
   const [answer, setAnswer] = useState("");
-  const [message, setMessage] = useState("");
-  const [tutorMessage, setTutorMessage] = useState<string>(copy.fr.nextAction);
-  const [complete, setComplete] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [voiceActive, setVoiceActive] = useState(false);
+  const [message, setMessage] = useState("Regarde les parts colorées. Combien y en a-t-il sur le total ?");
+  const [typed, setTyped] = useState("");
   const t = copy[locale];
+  const exercise = exercises[index];
 
-  async function askTutor(nextLevel = helpLevel, studentMessage = message) {
-    setHelpLevel(nextLevel);
-    const response = await fetch("/api/student/tutor", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ courseId: course.id, locale, helpLevel: nextLevel, studentAttempt: answer, message: studentMessage }) });
-    const data = await response.json();
-    setTutorMessage(data.message);
-    setMessage("");
+  function choose(value: string) {
+    setAnswer(value);
+    const correct = value === exercise.correct;
+    setFeedback(correct ? t.correct : t.wrong);
+    setMessage(correct ? (locale === "fr" ? "Oui ! Tu as compté les parts avec attention." : "Yes! You counted the parts carefully.") : (locale === "fr" ? "Regarde encore et explique-moi ton idée." : "Look again and explain your idea."));
   }
+  function next() { setIndex((value) => Math.min(value + 1, exercises.length - 1)); setAnswer(""); setFeedback(""); setMessage(locale === "fr" ? "Prends ton temps et dis-moi ce que tu remarques." : "Take your time and tell me what you notice."); }
+  function toggleVoice() { const active = !voiceActive; setVoiceActive(active); setMessage(active ? (locale === "fr" ? "Je t’écoute. Dis-moi ce que tu observes." : "I’m listening. Tell me what you notice.") : (locale === "fr" ? "Je suis prêt à continuer." : "I’m ready to continue.")); }
 
-  return (
-    <main className="lesson-v2-shell">
-      <header className="lesson-v2-header">
-        <Link href="/student/cours" className="lesson-v2-back">{t.back}</Link>
-        <div><span>{course.category}</span><strong>{course.title}</strong></div>
-        <div className="lesson-v2-header-tools"><button className="lesson-v2-locale" onClick={() => { const next = locale === "fr" ? "en" : "fr"; setLocale(next); setTutorMessage(copy[next].nextAction); }}>{locale === "fr" ? "EN" : "FR"}</button><div className="lesson-v2-progress-label">{locale === "fr" ? "Question 3 sur 8" : "Question 3 of 8"}</div></div>
-      </header>
-      <div className="lesson-v2-layout">
-        <section className="lesson-v2-work">
-          <div className="lesson-v2-objective"><span>{t.goal}</span><strong>{course.objective}</strong></div>
-          <div className={`lesson-v2-activity ${course.color}`}>
-            <div className="lesson-v2-activity-top"><span>{t.activity}</span><b>{complete ? t.done : t.inProgress}</b></div>
-            <h1>{course.studentPrompt}</h1><p>{course.description}</p>
-            <div className="lesson-v2-visual"><span>{course.icon}</span><div><b>{course.title}</b><small>{t.try}</small></div></div>
-            <label htmlFor="student-answer">{t.reasoning}</label>
-            <textarea id="student-answer" value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder={t.answerPlaceholder} />
-            <div className="lesson-v2-actions"><button className="lesson-v2-primary" onClick={() => setComplete(true)}>{complete ? t.saved : t.check}</button><button className="lesson-v2-ghost" onClick={() => askTutor("hint_1")}>{t.hint}</button></div>
-          </div>
-          <div className="lesson-v2-hints"><span>1. {t.think}</span><span className={helpLevel !== "question" ? "used" : ""}>2. {locale === "fr" ? "Indice" : "Hint"}</span><span className={complete ? "used" : ""}>3. {t.celebrate} ✦</span></div>
-        </section>
-        <aside className="lesson-v2-tutor">
-          <div className="lesson-v2-tutor-head"><div className="lesson-v2-tutor-avatar">✦</div><div><span>{t.tutor}</span><strong>{t.tutorTitle}</strong></div><i>●</i></div>
-          <div className="lesson-v2-goal"><span>{t.understood}</span><b>{course.objective}</b></div>
-          <div className="lesson-v2-chat"><div className="lesson-v2-bubble tutor">{tutorMessage}</div>{answer && <div className="lesson-v2-bubble student">{answer}</div>}</div>
-          <div className="lesson-v2-tutor-actions"><button onClick={() => askTutor("question")}>{t.ask}</button><button onClick={() => askTutor("hint_2")}>{t.nextHint}</button><button onClick={() => askTutor("example")}>{t.example}</button></div>
-          <div className="lesson-v2-compose"><input value={message} placeholder={t.compose} aria-label={t.compose} onChange={(event) => setMessage(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") askTutor(helpLevel, message); }} /><button aria-label={locale === "fr" ? "Envoyer" : "Send"} onClick={() => askTutor(helpLevel, message)}>↑</button></div>
-          <p className="lesson-v2-note">{t.note}</p>
-        </aside>
-      </div>
-    </main>
-  );
+  return <main className="lesson-kids-shell">
+    <aside className="lesson-kids-sidebar"><Link href="/student" className="lesson-kids-logo"><img src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link><nav><Link href="/student">☀ <span>Aujourd’hui</span></Link><Link className="active" href="/student/cours">▣ <span>Mes cours</span></Link><Link href="#">◈ <span>Jouer</span></Link><Link href="#">▥ <span>Ma progression</span></Link></nav><div className="kids-side-footer">✦<br /><small>{locale === "fr" ? "Ton tuteur t’aide à réfléchir." : "Your tutor helps you think."}</small></div></aside>
+    <section className="lesson-kids-main"><header className="lesson-kids-header"><Link href="/student/cours" className="lesson-kids-back">{t.back}</Link><div className="lesson-kids-heading"><span>{course.category}</span><strong>{course.title}</strong></div><div className="lesson-kids-header-right"><button className="kids-locale" onClick={() => setLocale((value) => value === "fr" ? "en" : "fr")}>{locale === "fr" ? "EN" : "FR"}</button><span className="kids-progress">{index + 1} / {exercises.length}</span></div></header>
+      <div className="lesson-kids-layout"><section className="kids-lesson-column"><div className="kids-lesson-top"><div><p className="kids-kicker">{t.activity}</p><h1>Les fractions</h1></div><div className="kids-progress-bar"><span style={{ width: `${((index + 1) / exercises.length) * 100}%` }} /></div></div><div className="kids-goal"><span>{t.goal}</span><strong>Comprendre les parts d’un tout</strong></div><article className="kids-exercise"><div className="kids-exercise-head"><span>À toi de jouer</span><b>{index + 1} / {exercises.length}</b></div><h2>{exercise.prompt}</h2>{exercise.kind === "bar" ? <div className="kids-fraction-bar" aria-label="Deux cases sur quatre sont remplies"><span className="filled" /><span className="filled" /><span /><span /></div> : exercise.kind === "recipe" ? <div className="kids-recipe-card"><span>🍽️</span><div><strong>Recette de famille</strong><small>Utilise 2 parts parmi 4 parts égales</small></div></div> : <div className="kids-pizza-wrap"><Image src={exercise.image} alt={exercise.alt} width={460} height={460} priority /></div>}<div className="kids-answer-grid">{exercise.answers.map((value) => <button key={value} className={answer === value ? (value === exercise.correct ? "correct" : "incorrect") : ""} onClick={() => choose(value)}>{value}</button>)}</div><div className="kids-exercise-actions"><button className="kids-try" onClick={() => { setAnswer(""); setFeedback(""); }}>{t.tryAgain}</button>{feedback && (answer === exercise.correct && index < exercises.length - 1 ? <button className="kids-next" onClick={next}>{t.next} →</button> : <span className="kids-feedback">{index === exercises.length - 1 && answer === exercise.correct ? t.finished : feedback}</span>)}</div></article></section>
+        <aside className={`kids-tutor-panel ${voiceActive ? "is-listening" : ""}`}><div className="kids-tutor-header"><div className="kids-tutor-title"><span className="kids-tutor-status">●</span><div><b>{t.tutor}</b><small>{t.tutorTitle}</small></div></div><span className="kids-sparkles">✦</span></div><div className="kids-tutor-goal"><span>{t.goal}</span><strong>Représenter une fraction</strong></div><div className="kids-avatar-stage"><div className="kids-avatar-waves">⌁</div><div className="kids-avatar"><div className="kids-avatar-cap">⌒</div><div className="kids-avatar-face"><i /><i /><b /></div></div><span className="kids-speaking-dot">{voiceActive ? "●" : ""}</span></div><div className="kids-tutor-bubble">{message}</div><button className="kids-quick yellow" onClick={() => setMessage(exercise.hint)}>💡 {t.hint}</button><button className="kids-quick blue" onClick={() => setMessage(locale === "fr" ? "Imagine que tu partages la pizza avec un ami." : "Imagine sharing the pizza with a friend.")}>💬 {t.explain}</button><div className="kids-voice-zone"><button className="kids-mic-button" aria-label={voiceActive ? t.listening : t.speak} onClick={toggleVoice}><span className="voice-ring ring-one" /><span className="voice-ring ring-two" /><span className="voice-mic">●</span></button><strong>{voiceActive ? t.listening : t.speak}</strong><small>{locale === "fr" ? "Le micro s’allume seulement quand tu appuies." : "The microphone turns on only when you tap."}</small></div><form className="kids-type-row" onSubmit={(event) => { event.preventDefault(); if (typed) { setMessage(typed); setTyped(""); } }}><input value={typed} onChange={(event) => setTyped(event.target.value)} placeholder={t.type} aria-label={t.type} /><button aria-label={locale === "fr" ? "Envoyer" : "Send"}>↑</button></form></aside>
+      </div></section>
+  </main>;
 }
