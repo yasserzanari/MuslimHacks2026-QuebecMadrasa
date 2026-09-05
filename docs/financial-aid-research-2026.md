@@ -8,6 +8,28 @@
 
 Le homeschooling ne crée pas automatiquement une aide financière dédiée. Les leviers les plus pertinents sont les prestations familiales basées sur l’enfant et le revenu, puis les programmes conditionnels (handicap, frais de garde, situation de travail/études). L’application doit afficher « à vérifier » plutôt que « admissible ».
 
+## Aides réellement spécifiques à l’instruction à domicile
+
+### Pas de chèque général par enfant
+
+La page officielle du Québec sur l’enseignement à la maison décrit les obligations, l’accompagnement et l’accès à certains services, mais ne prévoit pas de subvention générale pour acheter un curriculum, payer un tuteur ou financer une plateforme. Les sources communautaires AQED confirment également que le gouvernement n’offre pas de soutien financier général aux familles qui font l’école à la maison. Cette absence doit être expliquée honnêtement dans l’application.
+
+### Ce que le réseau scolaire peut fournir gratuitement
+
+Sur demande et selon les modalités du centre de services scolaire, un enfant instruit à domicile peut avoir accès à :
+
+- manuels et matériel pédagogique disponibles;
+- bibliothèque et ressources de référence;
+- certains services professionnels (psychologie, psychoéducation, adaptation scolaire, orthophonie, récupération et orientation);
+- laboratoires, locaux sportifs ou artistiques lorsqu’ils sont disponibles;
+- activités de préparation aux examens ministériels.
+
+Ce sont des services ou du matériel en nature, pas une allocation en argent. L’application doit donc créer une action « Contacter mon CSS / ma commission scolaire » plutôt que promettre un remboursement.
+
+### Exception importante : besoins particuliers
+
+L’Allocation pour des besoins particuliers — Jeunes peut financer des ressources matérielles recommandées par un professionnel de santé, mais les conditions publiées exigent notamment une déficience significative et persistante, un établissement privé non subventionné reconnu et un programme d’études reconnu, avec temps plein ou au moins 20 heures de cours par mois. Elle ne doit pas être présentée comme une aide générale pour le homeschooling à domicile.
+
 ## Programmes retenus
 
 | Programme | Montant / limite publiée | Conditions essentielles | Date ou action importante |
@@ -38,3 +60,6 @@ Le homeschooling ne crée pas automatiquement une aide financière dédiée. Les
 - [ARC — Prestation pour enfants handicapés](https://www.canada.ca/fr/agence-revenu/services/prestations-enfants-familles/prestation-enfants-handicapes.html)
 - [Québec — Allocation pour besoins particuliers, jeunes](https://www.quebec.ca/education/aide-financiere-aux-etudes/allocation-besoins-particuliers-jeunes/conditions-admissibilite)
 - [Revenu Québec — Crédit pour frais de garde](https://www.revenuquebec.ca/fr/citoyens/impots-et-taxes/impot-sur-le-revenu/production-de-la-declaration-de-revenus/ligne-par-ligne/451-a-480-remboursement-ou-solde-a-payer/ligne-455/)
+- [Québec — Enseignement à la maison](https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison)
+- [Québec — Services de soutien aux parents-éducateurs](https://www.quebec.ca/education/prescolaire-primaire-et-secondaire/programmes-formations-evaluation/enseignement-maison/services-soutien-parents)
+- [AQED — Association québécoise pour l’éducation à domicile](https://www.aqed.qc.ca/fr/nous-joindre/)
