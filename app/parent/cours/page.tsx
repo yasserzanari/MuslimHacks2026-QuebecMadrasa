@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { courses, type CourseCategory } from "@/src/domain/course-catalog";
 
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "#"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "#"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "#"], ["$", "Budget", "#"]];
+const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "#"], ["◌", "Communauté", "/parent/communaute"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "#"], ["$", "Budget", "#"]];
 const children = [{ id: "amine", name: "Amine", age: "10 ans", avatar: "👦" }, { id: "sara", name: "Sara", age: "14 ans", avatar: "👧" }];
 
 export default function CoursesPage() {
