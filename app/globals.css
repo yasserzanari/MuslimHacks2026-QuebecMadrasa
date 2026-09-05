@@ -311,6 +311,53 @@ button { cursor: pointer; }
 .side-link.active, .side-link:hover { color: var(--forest); background: var(--mint-2); }
 .sidebar-bottom { margin-top: auto; padding: 13px; border: 1px solid rgba(255,255,255,.14); border-radius: 15px; color: #afd3be; font-size: 12px; line-height: 1.45; }
 .workspace { min-width: 0; padding: 29px 4.2vw 50px; }
+.financial-workspace { min-width: 0; padding: 38px 4.2vw 48px; background: linear-gradient(135deg,#f3faf5 0%,#fbfdf9 60%,#eef8f0 100%); }
+.financial-header { display:flex; justify-content:space-between; align-items:flex-end; gap:24px; margin-bottom:24px; }
+.financial-header h1 { margin:7px 0 8px; font-family:Georgia,serif; font-size:42px; letter-spacing:-.055em; color:#173e32; }
+.financial-header p { margin:0; color:#60766c; font-size:15px; }
+.financial-year { padding:10px 13px; border:1px solid #d5e7d9; border-radius:12px; background:#fff; color:#38705a; font-size:12px; font-weight:700; white-space:nowrap; }
+.financial-disclaimer { margin-bottom:24px; padding:16px 18px; border:1px solid #eadfbe; border-radius:15px; background:#fffaf0; color:#6b6249; }
+.financial-disclaimer strong { color:#574c2f; font-size:14px; }
+.financial-disclaimer p { margin:6px 0 0; font-size:13px; line-height:1.55; }
+.financial-progress { display:flex; align-items:center; gap:11px; margin:0 auto 20px; max-width:900px; color:#9aaea4; font-size:12px; font-weight:800; }
+.financial-progress span.current { color:#126348; }
+.financial-progress i { height:1px; flex:1; background:#d5e6d8; }
+.financial-card, .financial-results { max-width:900px; margin:0 auto; }
+.financial-card { padding:28px; border:1px solid #dce9df; border-radius:22px; background:rgba(255,255,255,.9); box-shadow:0 18px 50px rgba(20,83,58,.08); }
+.financial-card-top { display:flex; align-items:center; gap:14px; margin-bottom:26px; }
+.financial-icon { display:grid; place-items:center; width:48px; height:48px; border-radius:15px; background:#d6f0df; color:#126348; font-size:23px; font-weight:800; }
+.financial-card h2, .results-heading h2 { margin:5px 0 0; font-family:Georgia,serif; font-size:28px; letter-spacing:-.04em; color:#173e32; }
+.financial-form { display:grid; gap:16px; max-width:610px; }
+.financial-form label:not(.financial-check) { display:grid; gap:7px; color:#385c4d; font-size:13px; font-weight:800; }
+.financial-form select { min-height:46px; padding:0 13px; border:1px solid #d6e4d9; border-radius:11px; background:#fff; color:#26483b; font:inherit; font-weight:600; }
+.financial-check { display:flex; align-items:center; gap:10px; padding:14px; border:1px solid #e0ece2; border-radius:12px; color:#365849; font-size:14px; font-weight:600; background:#fbfefb; }
+.financial-check input { accent-color:#16845a; width:17px; height:17px; }
+.financial-actions { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:8px; }
+.financial-button { border:0; cursor:pointer; }
+.ghost-button { min-height:42px; padding:0 15px; border:1px solid #cfe3d4; border-radius:10px; background:#fff; color:#277151; font-weight:800; cursor:pointer; }
+.financial-error { color:#a83c3c; font-size:13px; }
+.results-heading { display:flex; justify-content:space-between; align-items:flex-end; gap:20px; margin-bottom:17px; }
+.results-heading p { margin:7px 0 0; color:#6e8177; font-size:13px; }
+.aid-card { margin-bottom:13px; padding:19px 20px; border:1px solid #dce9df; border-radius:16px; background:#fff; box-shadow:0 8px 22px rgba(20,83,58,.04); }
+.aid-card.not-eligible { opacity:.78; }
+.aid-card-heading { display:flex; align-items:center; gap:12px; }
+.aid-dot { display:grid; place-items:center; width:31px; height:31px; border-radius:50%; background:#d9f2e1; color:#158253; font-weight:900; }
+.not-eligible .aid-dot { background:#eef1ee; color:#829188; }
+.aid-card-heading h3 { margin:0; color:#173e32; font-size:16px; }
+.aid-card-heading small { color:#829289; font-size:11px; }
+.aid-card-heading > strong { margin-left:auto; padding:6px 9px; border-radius:8px; background:#eff9f1; color:#277151; font-size:11px; }
+.not-eligible .aid-card-heading > strong { background:#f1f4f1; color:#728178; }
+.aid-card > p { color:#5d7066; font-size:13px; line-height:1.5; }
+.aid-card .aid-amount { margin:14px 0 4px; color:#126348; font-size:14px; font-weight:800; }
+.aid-card details { margin-top:14px; padding-top:13px; border-top:1px solid #edf2ed; }
+.aid-card summary { color:#17664a; cursor:pointer; font-size:13px; font-weight:800; }
+.aid-details { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:14px; color:#53695e; font-size:12px; line-height:1.55; }
+.aid-details ul, .aid-details ol { margin:7px 0 0; padding-left:20px; }
+.aid-caveat { padding:11px 12px; border-radius:9px; background:#f6faf6; color:#65786d !important; font-size:12px !important; }
+.aid-card a { color:#126348; font-size:12px; font-weight:800; }
+.financial-footer { max-width:900px; margin:22px auto 0; color:#819289; font-size:11px; text-align:center; }
+.financial-footer a { color:#277151; }
+@media (max-width:760px) { .financial-workspace { padding:24px 15px 38px; } .financial-header { display:block; } .financial-header h1 { font-size:32px; } .financial-year { display:inline-block; margin-top:15px; } .financial-card { padding:20px; } .financial-progress { gap:5px; font-size:10px; } .results-heading { display:block; } .results-heading .ghost-button { margin-top:14px; } .aid-details { grid-template-columns:1fr; gap:10px; } }
 .workspace-top { display: flex; justify-content: space-between; align-items: center; gap: 18px; margin-bottom: 32px; }
 .workspace-top h1 { margin: 5px 0 0; font-family: Georgia, serif; font-size: 34px; letter-spacing: -.04em; }
 .profile { display: flex; align-items: center; gap: 10px; padding: 8px 12px 8px 8px; border: 1px solid var(--line); border-radius: 99px; background: white; font-size: 13px; }
@@ -405,6 +452,7 @@ button { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .kids-avatar, .kids-avatar-face i, .kids-avatar-face b, .kids-avatar-waves, .voice-ring { animation: none; } }
 @media (max-width: 1000px) { .lesson-kids-layout { grid-template-columns: minmax(0, 1fr) 300px; }.lesson-kids-sidebar { width: 190px; flex-basis: 190px; } }
 @media (max-width: 760px) { .lesson-kids-shell { display: block; }.lesson-kids-sidebar { width: 100%; padding: 10px 16px; }.lesson-kids-logo { width: 145px; }.lesson-kids-sidebar nav { display: flex; gap: 4px; margin-top: 10px; overflow-x: auto; }.lesson-kids-sidebar nav a { flex: 1 0 auto; padding: 9px 10px; font-size: 12px; }.kids-side-footer { display: none; }.lesson-kids-main { padding: 15px; }.lesson-kids-layout { grid-template-columns: 1fr; }.kids-tutor-panel { min-height: 650px; }.kids-lesson-top { display: block; }.kids-progress-bar { width: 100%; margin-top: 15px; }.kids-goal { display: block; }.kids-goal strong { display: block; margin-top: 5px; }.kids-answer-grid { grid-template-columns: repeat(2, 1fr); }.kids-pizza-wrap { height: 190px; }.kids-pizza-wrap img { width: 185px; height: 185px; } }
+.kids-fraction-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; width: min(100%, 520px); margin: 25px auto 35px; }.kids-fraction-bar span { height: 86px; border: 2px solid #b9d6c3; border-radius: 12px; background: #f2f8f3; }.kids-fraction-bar span.filled { border-color: #29905c; background: linear-gradient(145deg, #4bbd79, #198351); box-shadow: inset 0 -8px 0 rgba(0,0,0,.08); }.kids-recipe-card { display: flex; align-items: center; gap: 20px; width: min(100%, 500px); min-height: 128px; margin: 15px auto 28px; padding: 20px; border: 1px solid #eedaa1; border-radius: 17px; background: #fff8df; }.kids-recipe-card > span { font-size: 53px; }.kids-recipe-card strong, .kids-recipe-card small { display: block; }.kids-recipe-card strong { color: #174a3b; font-family: Georgia, serif; font-size: 20px; }.kids-recipe-card small { margin-top: 7px; color: #766845; font-size: 12px; }
 
 .block-toggle, .ai-adjust { min-height: 39px; padding: 0 12px; border-radius: 9px; font-size: 11px; font-weight: 850; white-space: nowrap; }.block-toggle { border: 1px solid #c7d9cd; color: var(--forest); background: white; }.block-toggle.selected { color: white; border-color: var(--forest); background: var(--forest); }.ai-adjust { display: inline-flex; align-items: center; gap: 7px; border: 0; color: white; background: linear-gradient(135deg, #147851, #3baf73); box-shadow: 0 8px 16px rgba(23,74,59,.16); }.ai-adjust span { color: #ffe39b; font-size: 15px; }.ai-adjust:disabled { opacity: .68; }.blocking-banner { display: flex; align-items: center; gap: 11px; margin-bottom: 14px; padding: 12px 16px; border: 1px solid #b9dfc3; border-radius: 12px; color: var(--forest); background: #e7f7e9; }.blocking-banner > span { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 8px; background: white; }.blocking-banner strong, .blocking-banner small { display: block; }.blocking-banner strong { font-size: 12px; }.blocking-banner small { margin-top: 3px; color: #5e7969; font-size: 11px; }.drop-slot.blocking { cursor: crosshair; }.drop-slot.blocked { background: repeating-linear-gradient(135deg, #f2f5f2, #f2f5f2 7px, #e8eeea 7px, #e8eeea 14px); }.blocked-label { display: grid; place-items: center; height: 100%; color: #8a9890; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }.side-card-heading { display: flex; align-items: center; gap: 10px; }.side-card-heading .plan-side-icon { flex: 0 0 auto; }.side-card-heading h3 { margin: 0; font-size: 18px; }.side-card-heading .plan-kicker { margin: 0 0 3px; font-size: 9px; }.week-courses > p { margin-top: 13px; }.week-course { display: grid; grid-template-columns: 30px 1fr 10px; align-items: center; gap: 9px; padding: 11px 0; border-top: 1px solid var(--line); }.course-mini-icon { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 8px; font-family: Georgia, serif; font-size: 12px; font-weight: 800; }.course-mini-icon.blue { color: #2165a5; background: #e5f0fd; }.course-mini-icon.purple { color: #7351bf; background: #f0e8ff; }.course-mini-icon.green { color: #176c4f; background: #e2f3dd; }.course-mini-icon.gold { color: #b46d00; background: #fff1d4; }.week-course strong, .week-course small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }.week-course strong { color: var(--forest); font-size: 11px; }.week-course small { margin-top: 3px; color: #829088; font-size: 9px; }.week-course > b { color: var(--forest-2); font-size: 18px; }
 @media (max-width: 580px) {
