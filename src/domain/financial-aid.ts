@@ -107,6 +107,31 @@ export function matchFinancialAid(profile: FamilyProfile) {
     if (!eligible && program.id === "child-disability") reason = "Aucun enfant avec un CIPH/DTC approuvé n’a été indiqué.";
     if (!eligible && program.id === "quebec-special-needs") reason = "Cette aide exige un établissement privé non subventionné reconnu et un besoin particulier confirmé.";
     if (!eligible && program.id === "childcare-credit") reason = "Indiquez des frais de garde admissibles et une activité de travail, d’études ou de recherche d’emploi.";
-    return { ...program, eligible, reason };
+    return { ...program, eligible, reason, estimatedAmount: estimateAmount(program.id, profile) };
   });
+}
+
+function estimateAmount(programId: string, profile: FamilyProfile) {
+  const childCount = profile.children.length;
+  if (programId === "ccb") {
+    const maximum = profile.children.reduce((sum, child) => sum + (child.age < 6 ? 8157 : 6883), 0);
+    const incomeOver = Math.max(0, profile.annualIncome - 38237);
+    const reduction = incomeOver <= 44610 ? incomeOver * 0.07 : 3123 + Math.max(0, profile.annualIncome - 82847) * 0.032;
+    return `environ ${Math.max(0, Math.round(maximum - reduction)).toLocaleString("fr-CA")} $/an selon les réponses`;
+  }
+  if (programId === "family-allowance") {
+    const low = profile.familyStatus === "single" ? 4145 : 3068;
+    const high = profile.familyStatus === "single" ? 1651 : 1221;
+    const threshold = profile.familyStatus === "single" ? 44000 : 60000;
+    const perChild = profile.annualIncome <= threshold ? low : profile.annualIncome >= 107000 ? high : low - ((profile.annualIncome - threshold) / (107000 - threshold)) * (low - high);
+    return `environ ${Math.max(0, Math.round(perChild * childCount)).toLocaleString("fr-CA")} $/an avant ajustements`;
+  }
+  if (programId === "school-supplies") return `${(127 * childCount).toLocaleString("fr-CA")} $/an si les âges sont admissibles`;
+  if (programId === "child-disability") {
+    const eligibleChildren = profile.children.filter((child) => child.disabilityTaxCredit).length;
+    const reduction = Math.max(0, profile.annualIncome - 82847) * (eligibleChildren > 1 ? 0.057 : 0.032);
+    return eligibleChildren ? `environ ${Math.max(0, Math.round(3480 * eligibleChildren - reduction)).toLocaleString("fr-CA")} $/an selon le CIPH/DTC` : "0 $ selon les réponses";
+  }
+  if (programId === "childcare-credit") return profile.childcarePaid && profile.workingOrStudying ? "montant variable; frais et fournisseur requis" : "0 $ selon les réponses";
+  return "montant variable; décision officielle requise";
 }
