@@ -489,3 +489,101 @@ button { cursor: pointer; }
   .student-hero { display: block; }
   .mission-card { margin-top: 20px; }
 }
+
+/* Parcours Québec — classes préfixées .quebec- uniquement (mission dev-teammate/04). */
+.quebec-workspace { max-width: 1100px; }
+.quebec-toolbar { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 6px; }
+.quebec-page-lead { max-width: 720px; margin: 0 0 18px; color: var(--muted); font-size: 15px; line-height: 1.55; }
+.quebec-disclaimer { margin: 0 0 22px; padding: 13px 16px; border-left: 3px solid var(--amber); border-radius: 0 12px 12px 0; background: #fffaf0; color: var(--ink); font-size: 13px; line-height: 1.5; }
+.quebec-panel-lead { margin: 6px 0 16px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+
+.quebec-urgent { padding: 24px 26px; margin-bottom: 18px; border: 1px solid var(--line); border-left: 5px solid var(--forest-2); border-radius: 20px; background: white; }
+.quebec-urgent-overdue { border-left-color: var(--coral); background: #fff6f3; }
+.quebec-urgent-soon { border-left-color: var(--amber); background: #fffaf0; }
+.quebec-urgent-empty { border-left-color: var(--line); }
+.quebec-urgent-top { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+.quebec-urgent h2 { margin: 0; font-family: Georgia, serif; font-size: 18px; letter-spacing: -.02em; }
+.quebec-urgent-headline { margin: 10px 0 12px; font-family: Georgia, serif; font-size: 27px; line-height: 1.2; letter-spacing: -.03em; }
+.quebec-urgent-help { margin: 0; color: var(--muted); font-size: 13px; }
+.quebec-urgent-cta { display: inline-block; margin-top: 16px; }
+.quebec-urgent-second { margin: 14px 0 0; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+
+.quebec-days { display: inline-flex; padding: 6px 11px; border-radius: 99px; background: var(--mint); color: var(--forest-2); font-size: 12px; font-weight: 800; white-space: nowrap; }
+.quebec-days-overdue { background: #fde3dc; color: #93341c; }
+.quebec-days-today { background: var(--amber); color: var(--ink); }
+
+.quebec-deadline-chip { display: inline-flex; padding: 7px 12px; border-radius: 10px; background: var(--mint); color: var(--forest-2); font-size: 13px; font-weight: 700; }
+.quebec-deadline-window { background: #eef4ff; color: #2b4a7d; }
+.quebec-deadline-none { background: #f1f4f2; color: var(--muted); }
+.quebec-deadline-uncertain { margin: 8px 0 0; color: #8a6212; font-size: 12px; }
+.quebec-anchor-note { margin: 9px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.quebec-derived { color: #8a6212; }
+.quebec-superseded-note { margin: 6px 0 0; color: var(--muted); font-size: 12px; font-style: italic; }
+.quebec-reason { margin: 8px 0 0; color: var(--ink); font-size: 12px; }
+.quebec-legal-footnote { display: flex; flex-wrap: wrap; gap: 9px; margin: 12px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); color: var(--muted); font-size: 11px; }
+.quebec-legal-footnote a { color: var(--forest-2); text-decoration: underline; }
+.quebec-practice-tag { padding: 3px 8px; border-radius: 99px; background: #f1f4f2; color: var(--muted); font-weight: 700; }
+.quebec-verified { color: var(--muted); }
+
+.quebec-anchor-panel, .quebec-avis, .quebec-joint-card, .quebec-timeline, .quebec-project-form, .quebec-export-card { padding: 24px 26px; margin-bottom: 18px; border: 1px solid var(--line); border-radius: 20px; background: white; }
+.quebec-anchor-panel h2, .quebec-avis h2, .quebec-joint-card h2, .quebec-timeline h2, .quebec-project-form h2, .quebec-export-card h2 { margin: 0; font-family: Georgia, serif; font-size: 21px; letter-spacing: -.02em; }
+.quebec-anchor-grid, .quebec-avis-grid, .quebec-subject-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.quebec-subject-grid { margin-top: 14px; }
+.quebec-anchor-field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.quebec-anchor-field > span { font-weight: 700; }
+.quebec-anchor-field input, .quebec-anchor-field select, .quebec-anchor-field textarea { width: 100%; min-width: 0; padding: 10px 11px; border: 1px solid var(--line); border-radius: 10px; background: white; color: var(--ink); }
+.quebec-anchor-field textarea { resize: vertical; }
+.quebec-anchor-field small { color: var(--muted); font-size: 11px; line-height: 1.45; }
+.quebec-warning { color: #8a6212; }
+.quebec-entry-question { margin: 0 0 18px; padding: 16px 18px; border: 1px solid var(--mint-2); border-radius: 15px; background: var(--mint); }
+.quebec-entry-question legend { padding: 0 6px; font-family: Georgia, serif; font-size: 16px; font-weight: 700; }
+.quebec-radio { display: inline-flex; align-items: center; gap: 8px; margin-right: 18px; font-size: 13px; }
+.quebec-issue-list { margin-top: 16px; padding: 13px 16px; border-left: 3px solid var(--coral); border-radius: 0 12px 12px 0; background: #fff6f3; font-size: 13px; }
+.quebec-issue-list h3, .quebec-missing-list h3 { margin: 0 0 7px; font-size: 14px; }
+.quebec-issue-list ul, .quebec-missing-list ul { margin: 0; padding-left: 18px; line-height: 1.6; }
+
+.quebec-timeline-list { margin: 16px 0 0; padding: 0; list-style: none; }
+.quebec-req-card { padding: 18px 20px; margin-bottom: 12px; border: 1px solid var(--line); border-left: 4px solid var(--forest-2); border-radius: 16px; background: var(--cream); }
+.quebec-req-optional { border-left-color: var(--amber); }
+.quebec-req-practice { border-left-style: dashed; border-left-color: var(--muted); }
+.quebec-req-inactive { opacity: .72; border-left-color: var(--line); }
+.quebec-req-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.quebec-req-top h3 { margin: 0; font-size: 16px; }
+.quebec-req-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; margin-top: 11px; }
+.quebec-rule { margin: 10px 0 0; color: var(--muted); font-size: 12px; }
+.quebec-status-badge { padding: 5px 10px; border-radius: 99px; background: white; border: 1px solid var(--line); color: var(--forest-2); font-size: 11px; font-weight: 800; white-space: nowrap; }
+.quebec-status-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 14px; color: var(--muted); font-size: 12px; }
+.quebec-status-actions .button { padding: 7px 12px; font-size: 12px; }
+
+.quebec-joint-record { margin: 0 0 10px; color: var(--forest-2); font-size: 12px; font-weight: 700; }
+.quebec-joint-divergence { margin: 0 0 14px; padding: 11px 14px; border-left: 3px solid var(--amber); border-radius: 0 12px 12px 0; background: #fffaf0; font-size: 13px; font-weight: 700; }
+.quebec-joint-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.quebec-joint-item { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 15px; background: var(--cream); }
+.quebec-joint-item h3 { margin: 0; font-size: 14px; }
+
+.quebec-avis-ready { margin: 14px 0 0; color: var(--forest-2); font-size: 13px; font-weight: 700; }
+.quebec-missing-list { margin-top: 16px; padding: 13px 16px; border-left: 3px solid var(--amber); border-radius: 0 12px 12px 0; background: #fffaf0; font-size: 13px; }
+.quebec-recipient-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; }
+.quebec-recipient-card { padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px; background: var(--cream); }
+.quebec-recipient-card h3 { margin: 0 0 5px; font-size: 15px; }
+.quebec-addressee { margin: 0 0 10px; color: var(--muted); font-size: 12px; }
+.quebec-watermark { margin: 0 0 10px; padding: 9px 12px; border-radius: 10px; background: var(--amber); color: var(--ink); font-size: 12px; font-weight: 800; line-height: 1.4; }
+.quebec-document-preview { max-height: 260px; margin: 0; padding: 13px; overflow: auto; border: 1px solid var(--line); border-radius: 12px; background: white; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; line-height: 1.6; white-space: pre-wrap; }
+.quebec-channel-note { margin: 10px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.quebec-doc-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 14px; }
+.quebec-doc-actions .button { padding: 9px 14px; font-size: 13px; }
+.quebec-doc-actions .button:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.quebec-saved { color: var(--forest-2); font-size: 12px; font-weight: 700; }
+
+@media (max-width: 900px) {
+  .quebec-joint-grid { grid-template-columns: 1fr; }
+  .quebec-recipient-grid { grid-template-columns: 1fr; }
+  .quebec-anchor-grid, .quebec-avis-grid, .quebec-subject-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 580px) {
+  .quebec-anchor-panel, .quebec-avis, .quebec-joint-card, .quebec-timeline, .quebec-project-form, .quebec-export-card { padding: 18px 16px; }
+  .quebec-urgent { padding: 18px 16px; }
+  .quebec-urgent-headline { font-size: 22px; }
+  .quebec-toolbar { justify-content: flex-start; }
+  .quebec-req-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
