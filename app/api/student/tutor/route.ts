@@ -1,8 +1,22 @@
+import { jsonError, readEnum, readIdentifier, readJsonObject } from "@/src/domain/api-guards";
+
+/** Échelle d'aide de `docs/plan/services/04-tuteur-ia-eleve.md`. Le serveur décide du niveau. */
+const HELP_LEVELS = ["question", "hint_1", "hint_2", "example", "explanation"] as const;
+const LOCALES = ["fr", "en"] as const;
+
 export async function POST(request: Request) {
-  const body = await request.json().catch(() => ({}));
-  const level = body.helpLevel ?? "question";
-  const courseId = body.courseId ?? "fractions";
-  const locale = body.locale ?? "fr";
+  const parsed = await readJsonObject(request);
+  if (!parsed.ok) return parsed.response;
+  const body = parsed.body;
+
+  const level = body.helpLevel === undefined ? "question" : readEnum(body.helpLevel, HELP_LEVELS);
+  if (!level) return jsonError("helpLevel is invalid", 400);
+
+  const courseId = body.courseId === undefined ? "fractions" : readIdentifier(body.courseId);
+  if (!courseId) return jsonError("courseId is invalid", 400);
+
+  const locale = body.locale === undefined ? "fr" : readEnum(body.locale, LOCALES);
+  if (!locale) return jsonError("locale is invalid", 400);
   const hintSets: Record<string, Record<string, string>> = {
     fractions: { question: "Avant de calculer, qu’est-ce que la question te demande exactement ? Montre-moi ton idée.", hint_1: "Commence par représenter chaque fraction avec le même nombre de parts.", hint_2: "Pour comparer 3/4 et 2/3, cherche un dénominateur commun puis compare les numérateurs.", example: "Exemple différent : pour comparer 1/2 et 2/4, transforme-les en parts équivalentes." },
     "english-speaking": { question: "What do you already know about introducing yourself? Try one short sentence first.", hint_1: "Start with: ‘Hi, my name is…’ Then add one thing you like.", hint_2: "Use ‘I am’ for who you are and ‘I like’ for an activity you enjoy.", example: "Example: ‘Hi, my name is Adam. I like drawing.’ Now make your own version." },
@@ -11,7 +25,8 @@ export async function POST(request: Request) {
     "lettres-arabes": { question: "Quelle forme et quel son reconnais-tu dans cette lettre ?", hint_1: "Regarde d’abord les points : leur nombre et leur position sont importants.", hint_2: "Prononce le son lentement, puis compare-le à une lettre que tu connais déjà.", example: "Exemple : écris la lettre au début, au milieu et à la fin d’un mot." },
     "memorisation-coran": { question: "Peux-tu réciter le premier petit passage sans regarder ?", hint_1: "Écoute une seule phrase, répète-la trois fois, puis cache le texte.", hint_2: "Accroche chaque verset au mot-clé qui vient juste avant.", example: "Exemple : récite deux versets, puis vérifie seulement la fin de chacun." },
   };
-  const responses = hintSets[courseId] ?? hintSets.fractions;
+  // `Object.hasOwn` : un courseId comme "__proto__" ne doit pas atteindre la chaîne de prototypes.
+  const responses = Object.hasOwn(hintSets, courseId) ? hintSets[courseId] : hintSets.fractions;
   const englishFallback: Record<string, string> = { question: "Before answering, explain what you notice.", hint_1: "Try one small step and tell me why you chose it.", hint_2: "Connect your observation to the course objective.", example: "Here is a different example. Now create your own version." };
   const message = locale === "en" ? englishFallback[level] ?? englishFallback.question : responses[level] ?? responses.question;
   return Response.json({ message, helpLevel: level, nextAction: locale === "en" ? "Write your reasoning in one sentence." : "Écris ton raisonnement en une phrase." });
