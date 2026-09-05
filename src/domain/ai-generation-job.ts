@@ -53,6 +53,10 @@ export function canTransition(
   from: GenerationJobStatus,
   to: GenerationJobStatus,
 ): boolean {
+  // A status can reach this function from JSON or a future database row, where
+  // the union offers no protection. Without the guard, an unknown value throws
+  // "Cannot read properties of undefined" instead of answering the question.
+  if (!Object.hasOwn(transitions, from)) return false;
   return transitions[from].includes(to);
 }
 
