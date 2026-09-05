@@ -1,7 +1,13 @@
 import { communities, getCommunity } from "@/src/domain/communities";
 
 export async function GET(request: Request) {
-  const query = new URL(request.url).searchParams.get("q")?.toLowerCase().trim();
+  const params = new URL(request.url).searchParams;
+  const id = params.get("id");
+  if (id) {
+    const community = getCommunity(id);
+    return community ? Response.json({ community, mode: "local" }) : Response.json({ error: "Communauté introuvable" }, { status: 404 });
+  }
+  const query = params.get("q")?.toLowerCase().trim();
   const result = query ? communities.filter((community) => `${community.title} ${community.neighborhood} ${community.languages} ${community.activities.join(" ")}`.toLowerCase().includes(query)) : communities;
   return Response.json({ communities: result, total: result.length, mode: "local" });
 }

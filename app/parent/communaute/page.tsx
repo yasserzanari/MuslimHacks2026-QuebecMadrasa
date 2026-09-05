@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { communities, type LearningCommunity } from "@/src/domain/communities";
 
 const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "#"], ["◌", "Communauté", "/parent/communaute"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
@@ -18,6 +18,7 @@ export default function CommunityPage() {
     const haystack = `${community.title} ${community.neighborhood} ${community.languages} ${community.activities.join(" ")}`.toLowerCase();
     return haystack.includes(query.toLowerCase()) && (area === "Tous" || community.neighborhood === area) && (age === "Tous" || community.ages.startsWith(age));
   }), [query, area, age]);
+  useEffect(() => { if (selected) window.location.href = `/parent/communaute/${selected.id}`; }, [selected]);
 
   async function join(community: LearningCommunity) {
     const response = await fetch("/api/communities", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "join", communityId: community.id, parentId: "demo-parent", childId: "adam" }) });
