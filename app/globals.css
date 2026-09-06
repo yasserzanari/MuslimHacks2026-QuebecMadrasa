@@ -238,6 +238,57 @@
 @media (max-width: 1000px) { .courses-body { grid-template-columns: 1fr; }.assign-panel { display: none; } .courses-header { display: block; }.child-picker { margin-top: 20px; }.course-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 650px) { .courses-shell { grid-template-columns: 78px 1fr; }.courses-workspace { padding: 22px 14px 35px; }.course-grid, .detail-grid, .course-principles { grid-template-columns: 1fr; }.course-card { grid-template-columns: 100px 1fr; }.course-visual { margin: 12px; font-size: 29px; }.detail-hero { grid-template-columns: 1fr; }.course-visual.large { height: 130px; }.detail-hero h1 { font-size: 37px; }.tutor-preview { align-items: start; flex-wrap: wrap; }.tutor-preview .course-open { margin-left: 0; }.courses-header h1 { font-size: 42px; } }
 
+.onboarding-shell { min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 22px 16px 60px; background: radial-gradient(circle at 90% 0%, #d4f4dd 0, transparent 40%), #f4fbf1; }
+.onboarding-topbar { width: 100%; max-width: 760px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+.onboarding-brand { display: inline-flex; }
+.onboarding-card { width: 100%; max-width: 620px; padding: clamp(24px, 4vw, 44px); border-radius: 26px; background: white; box-shadow: 0 22px 55px rgba(23,74,59,.1); }
+.onboarding-steps { display: flex; gap: 10px; margin-bottom: 30px; }
+.onboarding-step-dot { flex: 1; display: flex; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 3px solid var(--line); color: var(--muted); font-size: 12px; font-weight: 800; }
+.onboarding-step-dot span { width: 22px; height: 22px; flex: 0 0 22px; display: grid; place-items: center; border-radius: 50%; background: var(--line); color: white; font-size: 11px; }
+.onboarding-step-dot.active { color: var(--forest); border-color: var(--forest); }
+.onboarding-step-dot.active span { background: var(--forest); }
+.onboarding-step-dot.done { color: var(--forest-2); border-color: var(--forest-2); }
+.onboarding-step-dot.done span { background: var(--forest-2); }
+.onboarding-eyebrow { margin: 0; color: var(--forest-2); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+.onboarding-card h1 { margin: 12px 0 8px; color: var(--forest); font-family: Georgia, serif; font-size: clamp(26px, 3.4vw, 36px); letter-spacing: -.04em; }
+.onboarding-lead { margin: 0 0 24px; color: var(--muted); line-height: 1.55; }
+.onboarding-field { display: block; margin-bottom: 16px; color: var(--ink); font-size: 13px; font-weight: 800; }
+.onboarding-field input, .onboarding-field select { display: block; width: 100%; min-height: 46px; margin-top: 7px; padding: 0 13px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: white; font-size: 14px; font-weight: 400; }
+.onboarding-field input:focus, .onboarding-field select:focus { outline: 0; border-color: var(--forest-2); box-shadow: 0 0 0 3px var(--mint); }
+.onboarding-hint { margin: -4px 0 18px; color: var(--muted); font-size: 12px; }
+.onboarding-error { margin: -8px 0 16px; color: #b3492f; font-size: 12px; font-weight: 700; }
+.onboarding-empty { padding: 16px; border: 1px dashed var(--line); border-radius: 14px; color: var(--muted); font-size: 13px; text-align: center; }
+.onboarding-child-list { display: grid; gap: 8px; margin: 0 0 16px; padding: 0; list-style: none; }
+.onboarding-child-chip { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 12px; background: var(--mint); }
+.onboarding-child-chip span { font-weight: 800; }
+.onboarding-child-chip small { flex: 1; color: var(--forest-2); font-size: 12px; }
+.onboarding-child-chip button { border: 0; color: var(--forest); background: transparent; font-size: 14px; }
+.onboarding-child-form { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; align-items: start; padding: 16px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 16px; background: #fbfefb; }
+.onboarding-child-form .onboarding-secondary { grid-column: 1 / -1; }
+.onboarding-consent { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 14px; font-size: 13px; line-height: 1.5; }
+.onboarding-consent input { margin-top: 3px; }
+.onboarding-consent.optional { background: #f7fbf8; }
+.onboarding-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+.onboarding-primary, .onboarding-secondary, .onboarding-ghost { min-height: 46px; padding: 0 20px; border-radius: 11px; font-weight: 800; font-size: 14px; transition: transform .18s ease, box-shadow .18s ease; }
+.onboarding-primary { display: inline-flex; align-items: center; justify-content: center; border: 0; color: white; background: var(--forest); }
+.onboarding-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(23,74,59,.18); }
+.onboarding-primary:disabled { opacity: .65; transform: none; box-shadow: none; cursor: default; }
+.onboarding-secondary { border: 1.5px solid var(--forest); color: var(--forest); background: white; }
+.onboarding-ghost { border: 0; color: var(--muted); background: transparent; }
+.onboarding-success { text-align: center; }
+.onboarding-success .onboarding-primary { margin-top: 22px; }
+.onboarding-summary { display: grid; gap: 12px; margin: 18px 0 0; padding: 18px; border-radius: 16px; background: var(--mint); text-align: left; }
+.onboarding-summary div { display: flex; justify-content: space-between; gap: 14px; }
+.onboarding-summary dt { color: var(--forest-2); font-size: 12px; font-weight: 800; }
+.onboarding-summary dd { margin: 0; text-align: right; font-size: 13px; }
+@media (max-width: 560px) {
+  .onboarding-child-form { grid-template-columns: 1fr; }
+  .onboarding-steps { gap: 6px; }
+  .onboarding-step-dot span { display: grid; }
+  .onboarding-step-dot { font-size: 0; gap: 0; justify-content: center; }
+  .onboarding-step-dot span { font-size: 11px; }
+}
+
 * { box-sizing: border-box; }
 html { background: var(--cream); }
 body { margin: 0; color: var(--ink); background: var(--cream); font-family: Arial, Helvetica, sans-serif; }
