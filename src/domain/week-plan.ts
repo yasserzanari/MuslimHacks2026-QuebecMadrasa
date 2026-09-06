@@ -23,7 +23,7 @@ const sessions: WeekSession[] = [
   { id: "session-review", childId: "sara", courseId: "english-speaking", title: "English speaking", date: "2026-09-11", startTime: "14:00", duration: 35, type: "review", location: "À la maison", status: "planned", note: "Practice introducing yourself and asking a simple question." },
 ];
 
-const blockedSlots = new Set<string>(["2026-09-07|12:00", "2026-09-07|15:00"]);
+const blockedSlots = new Set<string>(["2026-09-07|09:00", "2026-09-07|15:00"]);
 
 export function listWeekSessions(childId?: string) {
   return sessions.filter((session) => !childId || session.childId === childId);
@@ -50,4 +50,41 @@ export function setBlockedSlot(date: string, startTime: string, blocked: boolean
   if (blocked) blockedSlots.add(key);
   else blockedSlots.delete(key);
   return { date, startTime, blocked };
+}
+
+export type NewWeekSession = Omit<WeekSession, "id" | "status">;
+
+export function createWeekSession(input: NewWeekSession) {
+  const session: WeekSession = { ...input, id: `session-${Date.now()}-${Math.round(Math.random() * 1000)}`, status: "planned" };
+  sessions.push(session);
+  return session;
+}
+
+export function completeWeekSession(id: string) {
+  const session = sessions.find((item) => item.id === id);
+  if (!session) return undefined;
+  session.status = "done";
+  return session;
+}
+
+export const WEEK_DATES = ["2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-12", "2026-09-13"];
+export const WEEK_SLOTS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
+
+export type ScheduleSuggestion = { sessionId: string; title: string; fromDate: string; fromTime: string; toDate: string; toTime: string };
+
+export function suggestScheduleAdjustment(childId: string): ScheduleSuggestion[] {
+  const childSessions = sessions.filter((session) => session.childId === childId && session.status !== "done");
+  const occupied = new Set(childSessions.map((session) => `${session.date}|${session.startTime}`));
+  const suggestions: ScheduleSuggestion[] = [];
+  for (const session of childSessions) {
+    const key = `${session.date}|${session.startTime}`;
+    if (!blockedSlots.has(key)) continue;
+    const freeSlot = WEEK_DATES.flatMap((date) => WEEK_SLOTS.map((slot) => [date, slot] as const)).find(([date, slot]) => !blockedSlots.has(`${date}|${slot}`) && !occupied.has(`${date}|${slot}`));
+    if (!freeSlot) continue;
+    const [toDate, toTime] = freeSlot;
+    occupied.delete(key);
+    occupied.add(`${toDate}|${toTime}`);
+    suggestions.push({ sessionId: session.id, title: session.title, fromDate: session.date, fromTime: session.startTime, toDate, toTime });
+  }
+  return suggestions;
 }
