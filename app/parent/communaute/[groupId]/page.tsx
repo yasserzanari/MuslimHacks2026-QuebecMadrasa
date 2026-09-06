@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { getCommunity } from "@/src/domain/communities";
 
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "#"], ["◌", "Communauté", "/parent/communaute"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
+const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/assistant"], ["◌", "Communauté", "/parent/communaute"], ["▤", "Portfolio", "/parent/portfolio"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
 const groupImages: Record<string, string> = { "montreal-nord": "/ui/groups/montreal-nord.png", "laval-bilingue": "/ui/groups/laval-bilingue.png", "etudes-islamiques": "/ui/groups/etudes-islamiques.png" };
 
 export default function CommunityDetailPage() {
