@@ -18,7 +18,7 @@ const DEMO_TASKS = [
 
 const copy = {
   fr: {
-    nav: [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]],
+    nav: [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "/parent/portfolio"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]],
     sideLabel: "Famille",
     sidebarBottom: <>Votre espace reste privé.<br />Les contenus générés par l’IA nécessitent votre validation.</>,
     eyebrowWeek: "Espace parent · semaine du 7 septembre",
@@ -36,7 +36,7 @@ const copy = {
     family: (name: string) => `Famille ${name}`,
   },
   en: {
-    nav: [["⌂", "Home", "/parent"], ["☷", "Weekly plan", "/parent/plan"], ["▣", "Courses", "/parent/cours"], ["✦", "AI Assistant", "/parent/generation"], ["◌", "Community", "#"], ["▤", "Portfolio", "#"], ["◫", "Quebec pathway", "/parent/parcours-quebec"], ["$", "Budget", "#"]],
+    nav: [["⌂", "Home", "/parent"], ["☷", "Weekly plan", "/parent/plan"], ["▣", "Courses", "/parent/cours"], ["✦", "AI Assistant", "/parent/generation"], ["◌", "Community", "#"], ["▤", "Portfolio", "/parent/portfolio"], ["◫", "Quebec pathway", "/parent/parcours-quebec"], ["$", "Budget", "#"]],
     sideLabel: "Family",
     sidebarBottom: <>Your space stays private.<br />AI-generated content requires your validation.</>,
     eyebrowWeek: "Parent space · week of September 7",

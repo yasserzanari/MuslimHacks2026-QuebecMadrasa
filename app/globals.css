@@ -241,6 +241,30 @@
 .qc-date-row b { color: var(--forest); }
 .qc-date-row span { color: var(--muted); }
 .qc-footer-note { margin-top: 18px; padding: 14px 18px; border-radius: 12px; background: var(--mint); color: var(--forest); font-size: 12px; }
+.portfolio-toolbar { display: flex; justify-content: flex-end; margin-bottom: 15px; }
+.portfolio-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 15px; }
+.portfolio-card { display: flex; flex-direction: column; padding: 17px 19px; border: 1px solid #dce8df; border-radius: 16px; background: white; box-shadow: 0 8px 20px rgba(23,74,59,.04); }
+.portfolio-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.portfolio-icon { font-size: 22px; }
+.portfolio-card h3 { margin: 0 0 6px; color: var(--forest); font-size: 16px; }
+.portfolio-desc { margin: 0 0 8px; color: var(--ink); font-size: 13px; line-height: 1.4; min-height: 36px; }
+.portfolio-meta { margin: 0 0 12px; color: var(--muted); font-size: 11px; }
+.portfolio-actions { display: flex; align-items: center; gap: 7px; margin-top: auto; flex-wrap: wrap; }
+.portfolio-actions .detail-secondary { min-height: 35px; padding: 0 11px; font-size: 11px; }
+.portfolio-actions select { min-height: 35px; padding: 0 8px; border: 1px solid var(--forest); border-radius: 9px; color: var(--forest); background: white; font-size: 11px; font-weight: 700; }
+.portfolio-visibility { display: inline-flex; padding: 4px 9px; border-radius: 99px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em; }
+.portfolio-visibility.private { color: #56675e; background: #eef2ef; }
+.portfolio-visibility.family { color: #176c4f; background: #e2f3dd; }
+.portfolio-visibility.shared { color: #2165a5; background: #e5f0fd; }
+.portfolio-comments { margin-top: 18px; padding-top: 15px; border-top: 1px solid #dce8df; }
+.portfolio-comments > strong { display: block; margin-bottom: 10px; color: var(--forest); font-size: 12px; }
+.portfolio-comment { margin-bottom: 10px; padding: 10px 12px; border-radius: 10px; background: #f4faf5; font-size: 12px; }
+.portfolio-comment b { display: block; color: var(--forest); }
+.portfolio-comment span { display: block; margin: 3px 0; color: var(--ink); line-height: 1.4; }
+.portfolio-comment small { color: var(--muted); font-size: 10px; }
+.portfolio-compose { display: flex; gap: 6px; margin-top: 12px; }
+.portfolio-compose input { width: 100%; min-width: 0; padding: 10px; border: 1px solid #cfdfd5; border-radius: 9px; outline: 0; font-size: 12px; }
+.portfolio-compose button { width: 37px; border: 0; border-radius: 9px; color: white; background: var(--forest); }
 .credits-chip { display: flex; flex-direction: column; align-items: flex-end; padding: 10px 16px; border: 1px solid var(--line); border-radius: 14px; background: white; color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .05em; }
 .credits-chip span { font-family: Georgia, serif; font-size: 24px; color: var(--forest); text-transform: none; letter-spacing: normal; }
 .job-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }

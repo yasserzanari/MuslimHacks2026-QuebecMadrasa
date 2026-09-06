@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { GenerationJobRecord } from "@/src/domain/ai-generation-job";
 
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
+const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "/parent/portfolio"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
 
 const typeLabels: Record<string, string> = { lesson: "Leçon", exercises: "Exercices", weekly_report: "Rapport hebdomadaire", explanation: "Explication" };
 const statusLabels: Record<string, string> = { queued: "En file d’attente", running: "Génération en cours", review_required: "Prêt à vérifier", approved: "Approuvé", rejected: "Rejeté", failed: "Échec", cancelled: "Annulé" };

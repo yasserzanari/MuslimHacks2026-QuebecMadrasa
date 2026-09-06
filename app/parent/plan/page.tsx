@@ -9,7 +9,7 @@ const days = [
   ["Lun", "2026-09-07"], ["Mar", "2026-09-08"], ["Mer", "2026-09-09"], ["Jeu", "2026-09-10"], ["Ven", "2026-09-11"], ["Sam", "2026-09-12"], ["Dim", "2026-09-13"],
 ] as const;
 const slots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
+const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "/parent/portfolio"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
 const typeOptions: WeekSession["type"][] = ["lesson", "review", "group", "islamic"];
 
 function formatWeek() { return "7 – 13 septembre 2026"; }

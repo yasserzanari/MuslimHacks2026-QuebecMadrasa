@@ -6,7 +6,7 @@ import { buildQuebecSteps, currentSchoolYearLabel, OFFICIAL_SOURCES, type Quebec
 import { loadSubmission, markExported, saveSubmission, verifySubmission, type StepSubmission } from "@/src/domain/quebec-pathway-storage";
 import { loadFamily, type StoredFamily } from "@/src/domain/family-storage";
 
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
+const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/generation"], ["◌", "Communauté", "#"], ["▤", "Portfolio", "/parent/portfolio"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "#"]];
 
 type DisplayStatus = "done" | "overdue" | "in-progress" | "upcoming" | "ongoing" | "todo";
 
