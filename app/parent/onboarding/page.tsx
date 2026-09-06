@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { AGE_BANDS, currentSchoolYear, type AgeBand, type Jurisdiction, type Locale } from "@/src/domain/family";
+import { saveFamily, type StoredChild, type StoredFamily } from "@/src/domain/family-storage";
 
 type Step = 1 | 2 | 3;
 
@@ -177,6 +178,8 @@ export default function OnboardingPage() {
         body: JSON.stringify({ name: familyName.trim(), locale, jurisdiction, children: children.map((child) => ({ displayName: child.displayName, ageBand: child.ageBand })) }),
       });
       if (!response.ok) throw new Error("request_failed");
+      const data: { family: Omit<StoredFamily, "children">; children: StoredChild[] } = await response.json();
+      saveFamily({ ...data.family, children: data.children });
       setCreatedFamily({ name: familyName.trim(), jurisdiction, schoolYear, children });
     } catch {
       setSubmitError(true);
