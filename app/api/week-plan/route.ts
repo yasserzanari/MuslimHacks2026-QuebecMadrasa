@@ -1,10 +1,13 @@
-import { completeWeekSession, createWeekSession, listBlockedSlots, listWeekSessions, moveWeekSession, setBlockedSlot, suggestScheduleAdjustment, type SessionType } from "@/src/domain/week-plan";
+import { completeWeekSession, createWeekSession, findNextAvailableSlot, listBlockedSlots, listWeekSessions, moveWeekSession, setBlockedSlot, suggestScheduleAdjustment, type SessionType } from "@/src/domain/week-plan";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const childId = url.searchParams.get("childId") ?? undefined;
   if (url.searchParams.get("suggest") === "1" && childId) {
     return Response.json({ suggestions: suggestScheduleAdjustment(childId), mode: "local" });
+  }
+  if (url.searchParams.get("nextSlot") === "1" && childId) {
+    return Response.json({ slot: findNextAvailableSlot(childId) });
   }
   return Response.json({ sessions: listWeekSessions(childId), blockedSlots: listBlockedSlots(), mode: "local" });
 }

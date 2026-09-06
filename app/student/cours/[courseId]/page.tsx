@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { getCourse } from "@/src/domain/course-catalog";
 
@@ -13,6 +13,7 @@ const copy = {
 export default function StudentLessonPage() {
   const params = useParams<{ courseId: string }>();
   const course = getCourse(params.courseId) ?? getCourse("fractions")!;
+  const isParentPreview = useSearchParams().get("preview") === "parent";
   const [locale, setLocale] = useState<"fr" | "en">("fr");
   const [helpLevel, setHelpLevel] = useState("question");
   const [answer, setAnswer] = useState("");
@@ -31,6 +32,11 @@ export default function StudentLessonPage() {
 
   return (
     <main className="lesson-v2-shell">
+      {isParentPreview && <div className="preview-banner" role="status">
+        <span>👁</span>
+        <p>{locale === "fr" ? "Aperçu parent · vous voyez exactement ce que verra votre enfant." : "Parent preview · you're seeing exactly what your child will see."}</p>
+        <Link href={`/parent/cours/${course.id}`}>{locale === "fr" ? "Retour au cours ›" : "Back to course ›"}</Link>
+      </div>}
       <header className="lesson-v2-header">
         <Link href="/student/cours" className="lesson-v2-back">{t.back}</Link>
         <div><span>{course.category}</span><strong>{course.title}</strong></div>

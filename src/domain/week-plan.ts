@@ -70,6 +70,17 @@ export function completeWeekSession(id: string) {
 export const WEEK_DATES = ["2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-12", "2026-09-13"];
 export const WEEK_SLOTS = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
 
+export function findNextAvailableSlot(childId: string): { date: string; startTime: string } | null {
+  const occupied = new Set(sessions.filter((session) => session.childId === childId).map((session) => `${session.date}|${session.startTime}`));
+  for (const date of WEEK_DATES) {
+    for (const slot of WEEK_SLOTS) {
+      const key = `${date}|${slot}`;
+      if (!blockedSlots.has(key) && !occupied.has(key)) return { date, startTime: slot };
+    }
+  }
+  return null;
+}
+
 export type ScheduleSuggestion = { sessionId: string; title: string; fromDate: string; fromTime: string; toDate: string; toTime: string };
 
 export function suggestScheduleAdjustment(childId: string): ScheduleSuggestion[] {
