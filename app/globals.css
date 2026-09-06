@@ -347,6 +347,12 @@ button { cursor: pointer; }
 .task-title { font-weight: 700; font-size: 14px; }
 .task-meta { margin-top: 5px; color: var(--muted); font-size: 12px; }
 .tag { display: inline-flex; padding: 5px 8px; border-radius: 99px; color: var(--forest-2); background: var(--mint); font-size: 11px; font-weight: 750; white-space: nowrap; }
+.alert-banner { display: flex; align-items: center; gap: 13px; margin-top: 15px; padding: 15px 18px; border-radius: 16px; font-size: 13px; }
+.alert-banner span { font-size: 17px; }
+.alert-banner p { flex: 1; margin: 0; line-height: 1.4; }
+.alert-banner.warn { color: #7a5a12; background: #fff2d2; }
+.alert-banner.ok { color: var(--forest); background: var(--mint); }
+.alert-cta { white-space: nowrap; padding: 8px 13px; border-radius: 9px; color: white; background: var(--forest); font-size: 12px; font-weight: 800; }
 .bar { height: 9px; margin: 9px 0 15px; border-radius: 99px; background: #edf2ef; overflow: hidden; }
 .bar span { display: block; height: 100%; border-radius: inherit; background: var(--forest-2); }
 .bar.amber span { background: var(--amber); }
