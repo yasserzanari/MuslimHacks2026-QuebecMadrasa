@@ -1,30 +1,36 @@
-import { createGenerationJob } from "@/src/domain/ai-generation-job";
+import { buildDraftPreview, cancelGenerationJob, getCreditsBalance, listGenerationJobs, queueGenerationJob, retryGenerationJob } from "@/src/domain/ai-generation-job";
+
+export async function GET() {
+  return Response.json({ jobs: listGenerationJobs(), credits: getCreditsBalance(), mode: "local" });
+}
 
 export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   const locale = body.locale === "en" ? "en" : "fr";
   const subject = body.subject ?? "Mathématiques";
   const objective = body.objective ?? (locale === "en" ? "Practice the week’s objective" : "Réviser l’objectif de la semaine");
-  const job = createGenerationJob({
-    id: crypto.randomUUID(),
-    requestId: body.requestId ?? crypto.randomUUID(),
-    parentId: body.parentId ?? "demo-parent",
+  const result = queueGenerationJob({
+    parentId: body.parentId,
     childId: body.childId ?? "demo-child",
+    childName: body.childName,
     type: body.type ?? "lesson",
     requestText: body.requestText ?? "Créer une activité de révision",
-    creditsReserved: 1,
-  });
-  const draft = {
-    title: locale === "en" ? `Practice · ${subject}` : `Révision · ${subject}`,
     subject,
-    objective,
-    instructions: locale === "en" ? "Try each step and explain your reasoning." : "Essaie chaque étape et explique ton raisonnement.",
-    blocks: [
-      { type: "warmup", title: locale === "en" ? "Warm-up" : "Mise en route", prompt: locale === "en" ? `What do you already know about ${subject.toLowerCase()}?` : `Que sais-tu déjà sur ${subject.toLowerCase()} ?` },
-      { type: "guided-practice", title: locale === "en" ? "Guided practice" : "Pratique guidée", prompt: objective },
-      { type: "reflection", title: locale === "en" ? "Reflection" : "Réflexion", prompt: locale === "en" ? "What would you try differently next time?" : "Que ferais-tu autrement la prochaine fois ?" },
-    ],
-    requiresParentReview: true,
-  };
-  return Response.json({ ...job, draft }, { status: 201 });
+    locale,
+  });
+  if ("error" in result) return Response.json({ error: result.error }, { status: 402 });
+  return Response.json({ ...result.job, draft: buildDraftPreview(subject, objective, locale) }, { status: 201 });
+}
+
+export async function PATCH(request: Request) {
+  const body = await request.json().catch(() => ({}));
+  if (!body.jobId || (body.action !== "cancel" && body.action !== "retry")) {
+    return Response.json({ error: "jobId and a valid action are required" }, { status: 400 });
+  }
+  const result = body.action === "cancel" ? cancelGenerationJob(body.jobId) : retryGenerationJob(body.jobId);
+  if ("error" in result) {
+    const status = result.error === "not_found" ? 404 : result.error === "insufficient_credits" ? 402 : 409;
+    return Response.json({ error: result.error }, { status });
+  }
+  return Response.json({ ok: true, job: result.job, credits: getCreditsBalance() });
 }

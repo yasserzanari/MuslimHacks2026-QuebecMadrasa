@@ -47,7 +47,7 @@ export default function CourseDetailPage() {
   }
 
   return <main className="courses-shell">
-    <aside className="sidebar"><Link className="brand" href="/"><img className="sidebar-logo-image" src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link><div className="side-label">Famille</div><Link className="side-link" href="/parent"><span>⌂</span><span>Accueil</span></Link><Link className="side-link active" href="/parent/cours"><span>▣</span><span>Cours</span></Link><Link className="side-link" href="/parent/plan"><span>☷</span><span>Plan de la semaine</span></Link><Link className="side-link" href="#"><span>✦</span><span>Assistant IA</span></Link><div className="sidebar-bottom">Les contenus générés par l’IA nécessitent la validation du parent.</div></aside>
+    <aside className="sidebar"><Link className="brand" href="/"><img className="sidebar-logo-image" src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link><div className="side-label">Famille</div><Link className="side-link" href="/parent"><span>⌂</span><span>Accueil</span></Link><Link className="side-link active" href="/parent/cours"><span>▣</span><span>Cours</span></Link><Link className="side-link" href="/parent/plan"><span>☷</span><span>Plan de la semaine</span></Link><Link className="side-link" href="/parent/generation"><span>✦</span><span>Assistant IA</span></Link><div className="sidebar-bottom">Les contenus générés par l’IA nécessitent la validation du parent.</div></aside>
     <section className="courses-workspace detail-workspace">
       <Link href="/parent/cours" className="back-link">‹ &nbsp; Retour aux cours</Link>
       <div className="detail-hero">
