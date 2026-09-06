@@ -26,6 +26,7 @@ export default function ParentSettingsPage() {
         <Link className="side-link" href="/parent"><span>⌂</span><span>{fr ? "Accueil" : "Home"}</span></Link>
         <Link className="side-link" href="/parent/plan"><span>☷</span><span>{fr ? "Plan de la semaine" : "Weekly plan"}</span></Link>
         <Link className="side-link" href="/parent/cours"><span>▣</span><span>{fr ? "Cours" : "Courses"}</span></Link>
+        <Link className="side-link" href="/parent/assistant"><span>✦</span><span>{fr ? "Assistant IA" : "AI assistant"}</span></Link>
         <Link className="side-link" href="/parent/communaute"><span>◌</span><span>{fr ? "Communauté" : "Community"}</span></Link>
         <Link className="side-link" href="/parent/parcours-quebec"><span>◫</span><span>{fr ? "Parcours Québec" : "Québec path"}</span></Link>
         <Link className="side-link" href="/parent/budget"><span>$</span><span>{fr ? "Budget" : "Budget"}</span></Link>

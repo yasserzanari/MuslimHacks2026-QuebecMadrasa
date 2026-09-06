@@ -7,7 +7,7 @@ type Locale = "fr" | "en";
 
 const copy = {
   fr: {
-    nav: ["Accueil", "Plan de la semaine", "Cours", "Communauté", "Parcours Québec", "Budget"],
+    nav: ["Accueil", "Plan de la semaine", "Cours", "Assistant IA", "Communauté", "Parcours Québec", "Budget"],
     family: "Famille",
     hello: "Bonjour, Amine",
     familyName: "Amine Benyoussef",
@@ -49,7 +49,7 @@ const copy = {
     adviceLink: "Voir des conseils",
   },
   en: {
-    nav: ["Home", "Weekly plan", "Courses", "Community", "Québec path", "Budget"],
+    nav: ["Home", "Weekly plan", "Courses", "AI assistant", "Community", "Québec path", "Budget"],
     family: "Family",
     hello: "Good morning, Amine",
     familyName: "Amine Benyoussef",
@@ -92,8 +92,8 @@ const copy = {
   },
 } as const;
 
-const routes = ["/parent", "/parent/plan", "/parent/cours", "/parent/communaute", "/parent/parcours-quebec", "/parent/budget"];
-const icons = ["⌂", "☷", "▣", "◌", "◫", "$"];
+const routes = ["/parent", "/parent/plan", "/parent/cours", "/parent/assistant", "/parent/communaute", "/parent/parcours-quebec", "/parent/budget"];
+const icons = ["⌂", "☷", "▣", "✦", "◌", "◫", "$"];
 
 export default function ParentPage() {
   const [locale, setLocale] = useState<Locale>("fr");
