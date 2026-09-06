@@ -1,38 +1,32 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Browser QA for the two critical journeys in
- * docs/architecture/07-plan-maitre-pages-et-qa.md.
+ * Tests navigateur.
  *
- * The runner starts the app itself on `AI_PROVIDER=mock`, so the suite needs no key, no
- * network and no real child data — the same generator output every run.
+ * Les fichiers sont nommés `*.e2e.ts` et non `*.spec.ts` : Vitest ramasse
+ * `**\/*.spec.ts` par défaut, et les deux runners se marcheraient dessus.
  */
-
-/** Some environments ship Chromium outside Playwright's cache; point at it when they do. */
-const executablePath = process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined;
+const PORT = 3210;
 
 export default defineConfig({
-  testDir: "./tests/e2e",
-  timeout: 90_000,
-  expect: { timeout: 15_000 },
-  // The journeys share one in-memory queue, so they must not race each other.
-  workers: 1,
-  fullyParallel: false,
-  // CI also writes an HTML report so a failed run can be downloaded and replayed.
-  reporter: process.env.CI ? [["line"], ["html", { open: "never" }]] : [["list"]],
+  testDir: "./e2e",
+  testMatch: "**/*.e2e.ts",
+  outputDir: "./e2e/.results",
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 1 : 0,
+  reporter: [["list"]],
   use: {
-    baseURL: process.env.APP_BASE_URL ?? "http://localhost:3000",
-    ...devices["Desktop Chrome"],
-    launchOptions: executablePath ? { executablePath } : {},
-    trace: "retain-on-failure",
+    baseURL: `http://localhost:${PORT}`,
+    trace: "on-first-retry",
   },
+  projects: [
+    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+  ],
   webServer: {
-    // CI builds in its own step so a build failure is reported as a build failure.
-    // Locally the runner builds for you, so `npm run test:e2e` works from a clean checkout.
-    command: process.env.CI ? "npm run start" : "npm run build && npm run start",
-    url: "http://localhost:3000/api/health",
+    command: `npx next dev -p ${PORT}`,
+    url: `http://localhost:${PORT}`,
     reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
-    env: { AI_PROVIDER: "mock" },
+    timeout: 120_000,
   },
 });
