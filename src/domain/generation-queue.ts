@@ -1,3 +1,4 @@
+import { localStore } from "./local-store";
 import {
   createGenerationJob,
   transitionJob,
@@ -140,15 +141,22 @@ function seed(): QueuedJob[] {
   ];
 }
 
-let jobs: QueuedJob[] = seed();
-let sequence = 0;
+const store = localStore("generation-queue", () => ({ jobs: seed(), sequence: 0 }));
+
+function read(): QueuedJob[] { return store.get().jobs; }
+function write(jobs: QueuedJob[]): void { store.set({ ...store.get(), jobs }); }
+function nextSequence(): number {
+  const current = store.get();
+  store.set({ ...current, sequence: current.sequence + 1 });
+  return current.sequence + 1;
+}
 
 export const creditsPerJob = 1;
 export const monthlyCredits = 20;
 
 /** Mock worker: moves jobs forward on read so the queue is visibly alive without a real background process. */
 export function advanceQueue(now = Date.now()): void {
-  jobs = jobs.map((job) => {
+  write(read().map((job) => {
     const age = now - Date.parse(job.createdAt);
     if (job.status === "queued" && age > runningAfterMs) {
       return { ...transitionJob(job, "running", new Date(now).toISOString()), subject: job.subject, locale: job.locale, draft: job.draft, addedToPlan: job.addedToPlan };
@@ -158,16 +166,16 @@ export function advanceQueue(now = Date.now()): void {
       return { ...advanced, subject: job.subject, locale: job.locale, addedToPlan: job.addedToPlan, draft: job.draft ?? buildDraft({ type: job.type, subject: job.subject, objective: job.requestText, locale: job.locale, sources: job.sourceSnapshotIds }) };
     }
     return job;
-  });
+  }));
 }
 
 export function listJobs(): QueuedJob[] {
   advanceQueue();
-  return [...jobs].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
+  return [...read()].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
 }
 
 export function creditsUsed(): number {
-  return jobs.filter((job) => job.status !== "cancelled" && job.status !== "failed").reduce((total, job) => total + job.creditsReserved, 0);
+  return read().filter((job) => job.status !== "cancelled" && job.status !== "failed").reduce((total, job) => total + job.creditsReserved, 0);
 }
 
 export function enqueueJob(input: {
@@ -184,7 +192,7 @@ export function enqueueJob(input: {
   if (creditsUsed() + creditsPerJob > monthlyCredits) {
     throw new Error("credit_limit_reached");
   }
-  sequence += 1;
+  const sequence = nextSequence();
   const job: QueuedJob = {
     ...createGenerationJob({
       id: `job-${Date.now()}-${sequence}`,
@@ -199,26 +207,26 @@ export function enqueueJob(input: {
     subject: input.subject,
     locale,
   };
-  jobs = [job, ...jobs];
+  write([job, ...read()]);
   return job;
 }
 
 export type QueueAction = "cancel" | "approve" | "reject" | "retry" | "add_to_plan";
 
 export function applyAction(jobId: string, action: QueueAction): QueuedJob {
-  const current = jobs.find((job) => job.id === jobId);
+  const current = read().find((job) => job.id === jobId);
   if (!current) throw new Error("job_not_found");
 
   if (action === "add_to_plan") {
     if (current.status !== "approved") throw new Error("job_not_approved");
     const updated = { ...current, addedToPlan: true };
-    jobs = jobs.map((job) => (job.id === jobId ? updated : job));
+    write(read().map((job) => (job.id === jobId ? updated : job)));
     return updated;
   }
 
   if (action === "retry") {
     if (current.status !== "failed" && current.status !== "rejected") throw new Error("job_not_retryable");
-    sequence += 1;
+    const sequence = nextSequence();
     const retried: QueuedJob = {
       ...current,
       id: `job-${Date.now()}-${sequence}`,
@@ -232,7 +240,7 @@ export function applyAction(jobId: string, action: QueueAction): QueuedJob {
       draft: undefined,
       addedToPlan: false,
     };
-    jobs = [retried, ...jobs];
+    write([retried, ...read()]);
     return retried;
   }
 
@@ -245,12 +253,11 @@ export function applyAction(jobId: string, action: QueueAction): QueuedJob {
     addedToPlan: current.addedToPlan,
     approvedBy: nextStatus === "approved" ? current.parentId : current.approvedBy,
   };
-  jobs = jobs.map((job) => (job.id === jobId ? updated : job));
+  write(read().map((job) => (job.id === jobId ? updated : job)));
   return updated;
 }
 
 /** Test seam: restore the demo queue. */
 export function resetQueue(): void {
-  jobs = seed();
-  sequence = 0;
+  store.reset();
 }

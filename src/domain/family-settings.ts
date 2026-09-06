@@ -1,3 +1,5 @@
+import { localStore } from "./local-store";
+
 export type PermissionKey = "microphone" | "camera" | "live_classes" | "ai_tutor" | "portfolio_sharing" | "community_profile";
 
 export interface ChildPermissions {
@@ -58,43 +60,57 @@ function seed(): FamilySettings {
   };
 }
 
-let settings: FamilySettings = seed();
+const store = localStore("family-settings", seed);
 
 export function getSettings(): FamilySettings {
-  return settings;
+  return store.get();
+}
+
+function save(next: FamilySettings): FamilySettings {
+  store.set(next);
+  return next;
 }
 
 export function setPermission(childId: string, key: PermissionKey, value: boolean): FamilySettings {
   if (!(key in permissionLabels)) throw new Error("unknown_permission");
-  const child = settings.children.find((item) => item.childId === childId);
-  if (!child) throw new Error("child_not_found");
-  settings = { ...settings, children: settings.children.map((item) => (item.childId === childId ? { ...item, permissions: { ...item.permissions, [key]: value } } : item)) };
-  return settings;
+  const settings = store.get();
+  if (!settings.children.some((item) => item.childId === childId)) throw new Error("child_not_found");
+  return save({
+    ...settings,
+    children: settings.children.map((item) => (item.childId === childId ? { ...item, permissions: { ...item.permissions, [key]: value } } : item)),
+  });
 }
 
 export function setScreenLimit(childId: string, minutes: number): FamilySettings {
   if (!Number.isFinite(minutes) || minutes < 15 || minutes > 240) throw new Error("invalid_limit");
-  settings = { ...settings, children: settings.children.map((item) => (item.childId === childId ? { ...item, screenLimitMinutes: Math.round(minutes) } : item)) };
-  return settings;
+  const settings = store.get();
+  if (!settings.children.some((item) => item.childId === childId)) throw new Error("child_not_found");
+  return save({
+    ...settings,
+    children: settings.children.map((item) => (item.childId === childId ? { ...item, screenLimitMinutes: Math.round(minutes) } : item)),
+  });
 }
 
 export function setConsent(consentId: string, granted: boolean): FamilySettings {
+  const settings = store.get();
   const consent = settings.consents.find((item) => item.id === consentId);
   if (!consent) throw new Error("consent_not_found");
   if (consent.required && !granted) throw new Error("consent_required");
-  settings = { ...settings, consents: settings.consents.map((item) => (item.id === consentId ? { ...item, granted, updatedAt: nowIso() } : item)) };
-  if (consentId === "consent-transcripts") settings = { ...settings, transcriptsEnabled: granted };
-  return settings;
+  const next: FamilySettings = {
+    ...settings,
+    consents: settings.consents.map((item) => (item.id === consentId ? { ...item, granted, updatedAt: nowIso() } : item)),
+  };
+  return save(consentId === "consent-transcripts" ? { ...next, transcriptsEnabled: granted } : next);
 }
 
 export function setRetention(days: number): FamilySettings {
   if (!retentionOptions.includes(days)) throw new Error("invalid_retention");
-  settings = { ...settings, retentionDays: days };
-  return settings;
+  return save({ ...store.get(), retentionDays: days });
 }
 
 /** Family export: demo data only, never a real child record. */
 export function buildExport(): { generatedAt: string; family: string; children: unknown[]; consents: unknown[]; retentionDays: number } {
+  const settings = store.get();
   return {
     generatedAt: nowIso(),
     family: "demo-family",
@@ -105,5 +121,5 @@ export function buildExport(): { generatedAt: string; family: string; children: 
 }
 
 export function resetSettings(): void {
-  settings = seed();
+  store.reset();
 }

@@ -1,3 +1,5 @@
+import { localStore } from "./local-store";
+
 export type EvidenceType = "text" | "photo" | "audio" | "document" | "quiz";
 export type EvidenceSource = "lesson" | "live_session" | "parent_upload" | "generated";
 export type EvidenceVisibility = "private" | "family" | "shared_link";
@@ -75,31 +77,39 @@ function seed(): Evidence[] {
   ];
 }
 
-let evidence: Evidence[] = seed();
-let sequence = 0;
+const store = localStore("portfolio", () => ({ evidence: seed(), sequence: 0, accessLog: [] as AccessLogEntry[] }));
+
+function read(): Evidence[] { return store.get().evidence; }
+function write(evidence: Evidence[]): void { store.set({ ...store.get(), evidence }); }
+function nextSequence(): number {
+  const current = store.get();
+  store.set({ ...current, sequence: current.sequence + 1 });
+  return current.sequence + 1;
+}
 
 /** Access log required by 04-securite-et-donnees.md: every read or write on evidence is recorded. */
 export type AccessLogEntry = { id: string; at: string; actor: string; action: string; evidenceId?: string };
-let accessLog: AccessLogEntry[] = [];
 
 function log(action: string, actor = "demo-parent", evidenceId?: string) {
-  accessLog = [{ id: `log-${Date.now()}-${accessLog.length}`, at: new Date().toISOString(), actor, action, evidenceId }, ...accessLog].slice(0, 50);
+  const current = store.get();
+  const entry: AccessLogEntry = { id: `log-${Date.now()}-${current.accessLog.length}`, at: new Date().toISOString(), actor, action, evidenceId };
+  store.set({ ...current, accessLog: [entry, ...current.accessLog].slice(0, 50) });
 }
 
 export function listEvidence(childId?: string): Evidence[] {
   log(childId ? `read_portfolio:${childId}` : "read_portfolio");
-  const rows = childId ? evidence.filter((item) => item.childId === childId) : evidence;
+  const rows = childId ? read().filter((item) => item.childId === childId) : read();
   return [...rows].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
 }
 
 export function listAccessLog(): AccessLogEntry[] {
-  return accessLog;
+  return store.get().accessLog;
 }
 
 export function addEvidence(input: { childId: string; skillId: string; type: EvidenceType; titleFr: string; titleEn?: string; noteFr?: string; noteEn?: string; visibility?: EvidenceVisibility }): Evidence {
   if (!input.titleFr.trim()) throw new Error("title_required");
   if (!skills.some((skill) => skill.id === input.skillId)) throw new Error("unknown_skill");
-  sequence += 1;
+  const sequence = nextSequence();
   const item: Evidence = {
     id: `ev-${Date.now()}-${sequence}`,
     childId: input.childId,
@@ -114,34 +124,34 @@ export function addEvidence(input: { childId: string; skillId: string; type: Evi
     noteEn: (input.noteEn ?? input.noteFr ?? "").trim(),
     comments: [],
   };
-  evidence = [item, ...evidence];
+  write([item, ...read()]);
   log("add_evidence", "demo-parent", item.id);
   return item;
 }
 
 export function commentEvidence(evidenceId: string, text: string, author: EvidenceComment["author"] = "parent"): Evidence {
   if (!text.trim()) throw new Error("comment_required");
-  const target = evidence.find((item) => item.id === evidenceId);
+  const target = read().find((item) => item.id === evidenceId);
   if (!target) throw new Error("evidence_not_found");
   const comment: EvidenceComment = { id: `c-${Date.now()}`, author, text: text.trim(), createdAt: new Date().toISOString() };
   const updated = { ...target, comments: [...target.comments, comment] };
-  evidence = evidence.map((item) => (item.id === evidenceId ? updated : item));
+  write(read().map((item) => (item.id === evidenceId ? updated : item)));
   log("comment_evidence", "demo-parent", evidenceId);
   return updated;
 }
 
 export function setVisibility(evidenceId: string, visibility: EvidenceVisibility): Evidence {
-  const target = evidence.find((item) => item.id === evidenceId);
+  const target = read().find((item) => item.id === evidenceId);
   if (!target) throw new Error("evidence_not_found");
   const updated = { ...target, visibility };
-  evidence = evidence.map((item) => (item.id === evidenceId ? updated : item));
+  write(read().map((item) => (item.id === evidenceId ? updated : item)));
   log(`set_visibility:${visibility}`, "demo-parent", evidenceId);
   return updated;
 }
 
 export function removeEvidence(evidenceId: string): void {
-  if (!evidence.some((item) => item.id === evidenceId)) throw new Error("evidence_not_found");
-  evidence = evidence.filter((item) => item.id !== evidenceId);
+  if (!read().some((item) => item.id === evidenceId)) throw new Error("evidence_not_found");
+  write(read().filter((item) => item.id !== evidenceId));
   log("delete_evidence", "demo-parent", evidenceId);
 }
 
@@ -149,14 +159,12 @@ export type SkillProgress = { skill: Skill; count: number; lastAt?: string };
 
 export function skillProgress(childId: string): SkillProgress[] {
   return skills.map((skill) => {
-    const rows = evidence.filter((item) => item.childId === childId && item.skillId === skill.id);
+    const rows = read().filter((item) => item.childId === childId && item.skillId === skill.id);
     return { skill, count: rows.length, lastAt: rows.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))[0]?.createdAt };
   });
 }
 
 /** Test seam. */
 export function resetPortfolio(): void {
-  evidence = seed();
-  accessLog = [];
-  sequence = 0;
+  store.reset();
 }

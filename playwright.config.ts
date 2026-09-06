@@ -21,7 +21,20 @@ export default defineConfig({
     trace: "on-first-retry",
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        /*
+         * Environnements où le navigateur est déjà installé à une autre version
+         * que celle épinglée par @playwright/test (conteneurs, CI préchargée) :
+         * PLAYWRIGHT_CHROMIUM_PATH pointe vers le binaire à utiliser.
+         */
+        ...(process.env.PLAYWRIGHT_CHROMIUM_PATH
+          ? { launchOptions: { executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH } }
+          : {}),
+      },
+    },
   ],
   webServer: {
     command: `npx next dev -p ${PORT}`,

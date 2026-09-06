@@ -1,3 +1,5 @@
+import { localStore } from "./local-store";
+
 export type LiveSessionStatus = "lobby" | "live" | "ended";
 export type NotesStatus = "draft" | "validated" | "published";
 export type ParticipantRole = "student" | "tutor";
@@ -152,30 +154,34 @@ function seed(): LiveSession {
   };
 }
 
-let session: LiveSession = seed();
+const store = localStore("live-session", seed);
 
 export function getSession(sessionId = "ecosystemes"): LiveSession {
+  const session = store.get();
   if (sessionId !== session.id) throw new Error("session_not_found");
   return session;
 }
 
 function update(next: Partial<LiveSession>): LiveSession {
-  session = { ...session, ...next };
-  return session;
+  const updated = { ...store.get(), ...next };
+  store.set(updated);
+  return updated;
 }
 
 function participant(participantId: string): LiveParticipant {
-  const found = session.participants.find((item) => item.id === participantId);
+  const found = store.get().participants.find((item) => item.id === participantId);
   if (!found) throw new Error("participant_not_found");
   return found;
 }
 
 export function openRoom(): LiveSession {
+  const session = store.get();
   if (session.status === "ended") throw new Error("session_ended");
   return update({ status: "live", startedAt: session.startedAt ?? iso() });
 }
 
 export function raiseHand(participantId: string, raised: boolean): LiveSession {
+  const session = store.get();
   participant(participantId);
   return update({
     participants: session.participants.map((item) => (item.id === participantId ? { ...item, handRaised: raised, handRaisedAt: raised ? iso() : undefined } : item)),
@@ -183,6 +189,7 @@ export function raiseHand(participantId: string, raised: boolean): LiveSession {
 }
 
 export function grantTurn(participantId: string, grantedBy = "p-tutor"): LiveSession {
+  const session = store.get();
   if (session.status !== "live") throw new Error("session_not_live");
   participant(participantId);
   const now = iso();
@@ -195,6 +202,7 @@ export function grantTurn(participantId: string, grantedBy = "p-tutor"): LiveSes
 }
 
 export function endTurn(): LiveSession {
+  const session = store.get();
   const now = iso();
   return update({
     turns: session.turns.map((turn) => (turn.endedAt ? turn : { ...turn, endedAt: now })),
@@ -203,10 +211,12 @@ export function endTurn(): LiveSession {
 }
 
 export function currentTurn(): SpeakingTurn | undefined {
+  const session = store.get();
   return session.turns.find((turn) => !turn.endedAt);
 }
 
 export function shareIdea(participantId: string, text: string): LiveSession {
+  const session = store.get();
   if (!text.trim()) throw new Error("idea_required");
   const person = participant(participantId);
   const idea: SharedIdea = { id: `idea-${Date.now()}`, participantId, displayName: person.displayName, text: text.trim().slice(0, 400), createdAt: iso() };
@@ -218,21 +228,25 @@ export function shareIdea(participantId: string, text: string): LiveSession {
 }
 
 export function setAudio(participantId: string, audioState: AudioState): LiveSession {
+  const session = store.get();
   participant(participantId);
   return update({ participants: session.participants.map((item) => (item.id === participantId ? { ...item, audioState } : item)) });
 }
 
 export function setCamera(participantId: string, cameraOn: boolean): LiveSession {
+  const session = store.get();
   participant(participantId);
   return update({ participants: session.participants.map((item) => (item.id === participantId ? { ...item, cameraOn } : item)) });
 }
 
 export function removeParticipant(participantId: string): LiveSession {
+  const session = store.get();
   participant(participantId);
   return update({ participants: session.participants.map((item) => (item.id === participantId ? { ...item, present: false, handRaised: false, audioState: "muted" } : item)) });
 }
 
 export function addNote(section: NoteSection, content: string, source: NoteSource = "session"): LiveSession {
+  const session = store.get();
   if (!content.trim()) throw new Error("note_required");
   if (session.notesStatus === "published") throw new Error("notes_published");
   const note: SessionNote = { id: `note-${Date.now()}`, sessionId: session.id, section, content: content.trim(), source, validationStatus: "draft" };
@@ -240,18 +254,21 @@ export function addNote(section: NoteSection, content: string, source: NoteSourc
 }
 
 export function editNote(noteId: string, content: string): LiveSession {
+  const session = store.get();
   if (session.notesStatus === "published") throw new Error("notes_published");
   if (!session.notes.some((note) => note.id === noteId)) throw new Error("note_not_found");
   return update({ notes: session.notes.map((note) => (note.id === noteId ? { ...note, content: content.trim() } : note)) });
 }
 
 export function removeNote(noteId: string): LiveSession {
+  const session = store.get();
   if (session.notesStatus === "published") throw new Error("notes_published");
   return update({ notes: session.notes.filter((note) => note.id !== noteId) });
 }
 
 /** AI assistant actions: proposals only, always marked as ai and never auto-published. */
 export function aiAction(action: "relaunch" | "summarize" | "challenge"): LiveSession {
+  const session = store.get();
   if (action === "summarize") {
     const said = session.notes.filter((note) => note.section === "said");
     const summary = said.length
@@ -266,40 +283,47 @@ export function aiAction(action: "relaunch" | "summarize" | "challenge"): LiveSe
 }
 
 export function validateNotes(): LiveSession {
+  const session = store.get();
   if (session.notes.length === 0) throw new Error("no_notes");
   return update({ notesStatus: "validated", notes: session.notes.map((note) => ({ ...note, validationStatus: "validated" })) });
 }
 
 export function publishSummary(): LiveSession {
+  const session = store.get();
   if (session.notesStatus !== "validated") throw new Error("notes_not_validated");
   return update({ notesStatus: "published" });
 }
 
 export function startExitTicket(): LiveSession {
+  const session = store.get();
   if (session.status !== "live") throw new Error("session_not_live");
   return update({ exitTicket: { ...session.exitTicket, status: "open" } });
 }
 
 export function answerExitTicket(participantId: string, questionId: string, choiceId: string): LiveSession {
+  const session = store.get();
   if (session.exitTicket.status !== "open") throw new Error("ticket_not_open");
   const answers = { ...session.exitTicket.answers, [participantId]: { ...(session.exitTicket.answers[participantId] ?? {}), [questionId]: choiceId } };
   return update({ exitTicket: { ...session.exitTicket, answers } });
 }
 
 export function closeExitTicket(): LiveSession {
+  const session = store.get();
   return update({ exitTicket: { ...session.exitTicket, status: "closed" } });
 }
 
 export function endSession(): LiveSession {
+  const session = store.get();
   return update({ status: "ended", participants: session.participants.map((item) => ({ ...item, audioState: "muted", handRaised: false })) });
 }
 
 export function ticketScore(participantId: string): { answered: number; correct: number; total: number } {
+  const session = store.get();
   const answers = session.exitTicket.answers[participantId] ?? {};
   const correct = session.exitTicket.questions.filter((question) => answers[question.id] === question.correctChoiceId).length;
   return { answered: Object.keys(answers).length, correct, total: session.exitTicket.questions.length };
 }
 
 export function resetSession(): void {
-  session = seed();
+  store.reset();
 }
