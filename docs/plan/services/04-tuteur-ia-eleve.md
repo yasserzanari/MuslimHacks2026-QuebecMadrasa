@@ -1,60 +1,74 @@
-# Service — Tuteur IA élève
+# Service 4 — Tuteur IA élève
 
-## Rôle
+## Besoin réel
 
-Le tuteur accompagne l'élève pendant une leçon interactive. Il connaît l'objectif pédagogique, observe les étapes de raisonnement autorisées et choisit entre question, indice, exemple ou explication adaptée.
+Le parent ne peut pas être disponible pour expliquer chaque exercice. Un tuteur IA peut fournir de la pratique abordable, mais un enfant ne doit pas recevoir un chatbot libre qui invente des réponses, collecte des informations ou devient un compagnon sans supervision.
 
-## Règle d'interface obligatoire
+## Promesse
 
-- le devoir, l'exercice et les contrôles restent au centre;
-- le tuteur IA est uniquement dans un panneau latéral droit d'environ 25 à 30 % de la largeur;
-- l'élève peut écrire ou parler;
-- le panneau ne doit jamais cacher la question ni devenir une page de chat séparée;
-- le niveau d'aide est visible : question, indice 1, indice 2, exemple, puis solution expliquée seulement si le parcours l'autorise.
+Donner à l'enfant un accompagnement court et motivant entre deux interventions humaines : question, indice, tentative, feedback et transfert au parent si nécessaire.
 
-## Comportement pédagogique
+## Pages concernées
 
-Le tuteur reçoit l'objectif du cours, la notion travaillée, les tentatives de l'élève et les erreurs déjà observées. Il doit d'abord demander à l'élève d'expliquer son idée, puis donner un indice ciblé. Il ne révèle pas directement la réponse lorsque l'élève peut encore raisonner.
+- `Espace élève / Tuteur`;
+- `Démarrer une session`;
+- `Avatar et voix`;
+- `Aide parent`;
+- `Rapport parent`;
+- `Crédits et limites`;
+- `Paramètres de consentement`.
 
-Exemple : au lieu de répondre à un problème de fractions, il demande « Quelle opération faut-il faire en premier et pourquoi ? » puis vérifie l'étape proposée.
+## Flux sécurisé
 
-## Fonctions MVP
+1. L'enfant ouvre une leçon déjà approuvée.
+2. Le tuteur explique l'objectif en langage adapté.
+3. L'enfant répond.
+4. L'IA donne un indice avant de donner une explication.
+5. Après plusieurs erreurs, elle propose une activité plus simple.
+6. Si la question sort du sujet, elle demande de consulter le parent.
+7. Le parent reçoit la compétence travaillée et les difficultés générales.
 
-- affichage de l'objectif du cours;
-- devoir interactif au centre;
-- chat texte dans le panneau droit;
-- bouton microphone et transcription;
-- bouton « Donne-moi un indice »;
-- bouton « Pose-moi une question »;
-- bouton « Explique autrement »;
-- détection simple de la demande de réponse directe;
-- journal des indices utilisés et de la tentative de l'élève;
-- retour au parent sous forme de progression, sans exposer une conversation inutilement privée.
+## Architecture pédagogique
 
-## Extension : aide en classe de groupe
+- banque de leçons approuvées;
+- objectifs et niveau transmis au modèle;
+- outils limités : question, indice, reformulation, exemple;
+- réponses vérifiées quand c'est possible;
+- validation de sortie;
+- quotas de texte/voix/avatar;
+- aucun accès direct du modèle aux autres enfants.
 
-Pour les cours qui nécessitent la discussion, le tuteur peut fonctionner dans une classe collaborative. Il pose une question commune, distribue les tours de parole, reformule les idées et prépare un résumé ou un mini-jeu après la session. La classe collaborative et ses règles de sécurité sont décrites dans `12-classes-collaboratives.md`.
+## Interface
 
-## Garde-fous
+L'avatar doit être un personnage 2D chaleureux, clairement marqué `Tutoriel IA`. Il doit pouvoir être désactivé. La voix est facultative et le texte reste disponible.
 
-- ne pas faire le devoir à la place de l'élève;
-- ne pas inventer une note ou déclarer un diagnostic;
-- ne pas utiliser caméra, localisation ou données sensibles par défaut;
-- limiter la longueur et le nombre de messages par leçon;
-- permettre à l'élève de signaler une réponse incorrecte;
-- prévoir une sortie vers un adulte lorsque le problème dépasse l'aide pédagogique;
-- conserver les objectifs, sources et version du tuteur pour chaque session.
+## MVP
 
-## Contrat logique minimal
+- une leçon académique;
+- une leçon arabe ou Coran;
+- tuteur texte;
+- avatar animé simple;
+- trois types de réponses;
+- rapport parent;
+- limite de session;
+- bouton de sortie.
 
-```text
-lesson_goal
-current_question
-student_attempt
-help_level: question | hint_1 | hint_2 | example | explanation
-interaction_mode: text | voice
-response
-next_action
-```
+## Attention
 
-Le serveur décide du niveau d'aide et filtre la réponse avant de l'envoyer à l'élève. Le navigateur ne doit jamais contenir la clé du fournisseur IA ni la logique de sécurité.
+- ne pas appeler l'IA “vrai professeur”;
+- ne pas autoriser un chat général au MVP;
+- ne pas conserver une transcription complète par défaut;
+- ne pas demander nom complet, adresse, école ou situation familiale;
+- ne pas faire de diagnostic ou d'évaluation officielle;
+- tester les mauvaises réponses, le jailbreak et les questions sensibles;
+- ne pas laisser l'avatar créer une dépendance émotionnelle;
+- tester l'accessibilité, la latence et la compréhension vocale;
+- mesurer le coût réel par session avant de fixer les crédits.
+
+## Critères de réussite
+
+- 90 % des réponses de démonstration restent dans la leçon;
+- le tuteur donne un indice avant la solution;
+- l'enfant peut arrêter la session;
+- le parent comprend ce qui a été travaillé sans accéder à des données inutiles;
+- aucune clé API n'est visible dans le navigateur.

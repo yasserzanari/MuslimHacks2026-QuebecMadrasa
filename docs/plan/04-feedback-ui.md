@@ -1,11 +1,11 @@
 # Feedback UI permanent
 
-- Page publique : barre de navigation horizontale en haut, jamais de sidebar.
+## Règles obligatoires
+
+- Landing page publique : navigation horizontale en haut, jamais de sidebar.
 - Parent connecté : sidebar fixe à gauche.
-- Élève : interface séparée, simple, lisible et adaptée à l'âge.
-- Thème : vert clair, vert profond, crème et accents chaleureux.
-- Chaque écran doit expliquer sa fonction rapidement et garder uniquement les actions utiles.
-- Dans une leçon, le devoir reste au centre et le Tuteur IA reste dans un panneau latéral à droite.
-- Le Tuteur IA doit accepter le texte et la voix.
-- Le Tuteur IA guide le raisonnement avec des questions et des indices; il ne donne pas immédiatement la réponse.
-- Toutes les pages doivent être disponibles en français et en anglais; aucune page ne doit être considérée terminée avec du texte dans une seule langue.
+- Élève : interface séparée, plus simple et plus ludique.
+- Les écrans doivent expliquer rapidement la fonction réelle de la plateforme.
+- UI simple, mais chaque carte et chaque action doivent être utiles.
+- Thème vert clair, vert profond, crème et accents ambre.
+- Ne pas utiliser de texte décoratif ou de fausses statistiques pour remplir l'écran.

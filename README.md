@@ -73,3 +73,14 @@ Lire d'abord :
 5. `dev-teammate/README.md`
 
 Sans `.env.local`, le projet n'utilise aucune clé externe, aucune vraie base cloud, aucune vraie génération IA et aucune vraie visioconférence. Les adaptateurs locaux sont intentionnels pour le développement et les tests.
+
+## Plan produit
+
+- [Plan global](docs/plan/00-plan-global.md)
+- [Décisions critiques](docs/plan/01-decisions-critiques.md)
+- [Pages et navigation](docs/plan/02-pages-navigation.md)
+- [Plan d'exécution parallèle](docs/plan/03-plan-execution-parallele.md)
+- [Services](docs/plan/services/)
+
+Le service aide les familles à organiser leur parcours; il ne remplace ni le ministère,
+ni une école accréditée, ni un enseignant, ni une autorité religieuse.
