@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ParentShell, { type ParentLocale } from "@/components/parent/ParentShell";
 import { contextSources, jobStatusLabels, jobTypeLabels, type QueuedJob } from "@/src/domain/generation-queue";
 import type { GenerationJobType } from "@/src/domain/ai-generation-job";
+import { colon } from "@/src/i18n";
 
 type Message = { id: string; role: "parent" | "assistant"; text: string; sources?: string[] };
 
@@ -172,7 +173,7 @@ export default function ParentAssistantPage() {
             {messages.map((message) => (
               <div key={message.id} className={`assistant-bubble ${message.role}`}>
                 <p>{message.text}</p>
-                {message.sources && message.sources.length > 0 && <small>{locale === "fr" ? "Sources lues" : "Sources read"} : {message.sources.join(" · ")}</small>}
+                {message.sources && message.sources.length > 0 && <small>{locale === "fr" ? "Sources lues" : "Sources read"}{colon(locale)}{message.sources.join(" · ")}</small>}
               </div>
             ))}
           </div>

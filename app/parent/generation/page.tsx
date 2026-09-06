@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import ParentShell, { type ParentLocale } from "@/components/parent/ParentShell";
 import { jobStatusLabels, jobTypeLabels, type QueuedJob } from "@/src/domain/generation-queue";
 import type { GenerationJobStatus } from "@/src/domain/ai-generation-job";
+import { colon } from "@/src/i18n";
 
 type Filter = "all" | "active" | "review_required" | "approved" | "rejected";
 
@@ -173,7 +174,7 @@ export default function ParentGenerationPage() {
               <div>
                 <span className="panel-kicker">{jobTypeLabels[job.type][locale]} · {job.subject}</span>
                 <h3>{job.requestText}</h3>
-                <small>{t.child} : {job.childId ?? "—"} · {t.created} : {new Date(job.createdAt).toLocaleString(locale === "fr" ? "fr-CA" : "en-CA")}{job.attemptCount > 0 ? ` · ${t.attempt} ${job.attemptCount + 1}` : ""}</small>
+                <small>{t.child}{colon(locale)}{job.childId ?? "—"} · {t.created}{colon(locale)}{new Date(job.createdAt).toLocaleString(locale === "fr" ? "fr-CA" : "en-CA")}{job.attemptCount > 0 ? ` · ${t.attempt} ${job.attemptCount + 1}` : ""}</small>
               </div>
               <span className={`queue-status ${job.status}`}>{jobStatusLabels[job.status][locale]}</span>
             </div>

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import StudentNav from "@/components/student/StudentNav";
 import { courses, localizeCourses } from "@/src/domain/course-catalog";
 import type { SkillProgress } from "@/src/domain/portfolio";
+import { colon } from "@/src/i18n";
 
 type Locale = "fr" | "en";
 
@@ -93,7 +94,7 @@ export default function StudentProgressPage() {
             <div className="progress-skill" key={row.skill.id}>
               <div>
                 <strong>{locale === "fr" ? row.skill.labelFr : row.skill.labelEn}</strong>
-                <small>{locale === "fr" ? row.skill.subjectFr : row.skill.subjectEn} · {t.lastWork} : {row.lastAt ? new Date(row.lastAt).toLocaleDateString(locale === "fr" ? "fr-CA" : "en-CA") : t.never}</small>
+                <small>{locale === "fr" ? row.skill.subjectFr : row.skill.subjectEn} · {t.lastWork}{colon(locale)}{row.lastAt ? new Date(row.lastAt).toLocaleDateString(locale === "fr" ? "fr-CA" : "en-CA") : t.never}</small>
               </div>
               <b className={row.count === 0 ? "empty" : ""}>{row.count === 0 ? t.noEvidence : `${row.count} ${t.evidence}`}</b>
             </div>

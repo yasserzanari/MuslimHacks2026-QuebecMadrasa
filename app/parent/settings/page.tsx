@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import ParentShell, { type ParentLocale } from "@/components/parent/ParentShell";
 import { permissionLabels, retentionOptions, type FamilySettings, type PermissionKey } from "@/src/domain/family-settings";
+import { colon } from "@/src/i18n";
 
 const permissionKeys = Object.keys(permissionLabels) as PermissionKey[];
 
@@ -182,7 +183,7 @@ export default function ParentSettingsPage() {
                   <span>
                     <strong>{locale === "fr" ? consent.labelFr : consent.labelEn}{consent.required && <em className="settings-required">{t.required}</em>}</strong>
                     <small>{locale === "fr" ? consent.detailFr : consent.detailEn}</small>
-                    <small className="settings-updated">{t.updated} : {new Date(consent.updatedAt).toLocaleDateString(locale === "fr" ? "fr-CA" : "en-CA")}</small>
+                    <small className="settings-updated">{t.updated}{colon(locale)}{new Date(consent.updatedAt).toLocaleDateString(locale === "fr" ? "fr-CA" : "en-CA")}</small>
                   </span>
                 </label>
               ))}

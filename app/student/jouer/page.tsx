@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import StudentNav from "@/components/student/StudentNav";
+import { colon } from "@/src/i18n";
 
 type Locale = "fr" | "en";
 
@@ -154,7 +155,7 @@ export default function StudentPlayPage() {
         {game && done && (
           <section className="play-round play-result">
             <div className="play-result-badge">★</div>
-            <h2>{t.score} : {score} {t.of} {game.questions.length}</h2>
+            <h2>{t.score}{colon(locale)}{score} {t.of} {game.questions.length}</h2>
             <p>{score === game.questions.length ? t.great : score > 0 ? t.good : t.keep}</p>
             <div className="play-result-actions">
               <button className="student-v2-primary" onClick={() => start(game.id)}>{t.replay}</button>

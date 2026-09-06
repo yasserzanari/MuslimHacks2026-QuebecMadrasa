@@ -4,6 +4,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { useState } from "react";
 import { getCourse, localizeCourse } from "@/src/domain/course-catalog";
+import { colon } from "@/src/i18n";
 
 type Locale = "fr" | "en";
 
@@ -99,7 +100,7 @@ export default function CourseDetailPage({ params }: { params: { courseId: strin
           <div>
             <span className="panel-kicker">{t.tutor}</span>
             <h2>{t.tutorLead}</h2>
-            <p>{t.startQuestion} : « {course.studentPrompt} »</p>
+            <p>{t.startQuestion}{colon(locale)}« {course.studentPrompt} »</p>
           </div>
           <Link href={`/student/cours/${course.id}`} className="course-open">{t.studentView} ›</Link>
         </section>

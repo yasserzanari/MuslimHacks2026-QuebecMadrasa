@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { localizeCourses, type CourseCategory } from "@/src/domain/course-catalog";
+import { colon } from "@/src/i18n";
 
 type Locale = "fr" | "en";
 
@@ -132,7 +133,7 @@ export default function CoursesPage() {
                     <button className="more-button" aria-label={`${t.options} ${course.title}`}>⋮</button>
                   </div>
                   <h2>{course.title}</h2>
-                  <p className="course-level">{t.level} : {course.level}</p>
+                  <p className="course-level">{t.level}{colon(locale)}{course.level}</p>
                   <p className="course-duration">◷ &nbsp;{course.duration}</p>
                   <strong className="objective-label">{t.objective}</strong>
                   <p className="course-objective">{course.objective}</p>
@@ -154,7 +155,7 @@ export default function CoursesPage() {
                 <div className={`suggestion-icon ${course.color}`}>{course.icon}</div>
                 <span className={`course-tag ${course.color}`}>{categoryLabels[course.category][locale]}</span>
                 <h3>{course.title}</h3>
-                <p>{t.level} : {course.level}</p>
+                <p>{t.level}{colon(locale)}{course.level}</p>
                 <p>◷ &nbsp;{course.duration}</p>
                 <strong>{t.objective}</strong>
                 <p>{course.objective}</p>

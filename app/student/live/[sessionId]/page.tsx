@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { LiveSession, SpeakingTurn } from "@/src/domain/live-session";
+import { colon } from "@/src/i18n";
 
 type Locale = "fr" | "en";
 
@@ -200,7 +201,7 @@ export default function StudentLivePage({ params }: { params: { sessionId: strin
               </div>
             </div>
           ))}
-          {session.exitTicket.status === "closed" && <p className="student-live-score">{t.yourScore} : {correct}/{session.exitTicket.questions.length}</p>}
+          {session.exitTicket.status === "closed" && <p className="student-live-score">{t.yourScore}{colon(locale)}{correct}/{session.exitTicket.questions.length}</p>}
         </section>
       </div>
 
