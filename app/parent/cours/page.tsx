@@ -3,8 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { courses, type CourseCategory } from "@/src/domain/course-catalog";
-
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/assistant"], ["◌", "Communauté", "/parent/communaute"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "/parent/budget"]];
+import { ParentSidebar } from "@/app/parent/parent-sidebar";
 const children = [{ id: "amine", name: "Amine", age: "10 ans", avatar: "👦" }, { id: "sara", name: "Sara", age: "14 ans", avatar: "👧" }];
 const categoryLabels: Record<string, string> = { Mathematiques: "Mathématiques", Francais: "Français", Anglais: "Anglais", Sciences: "Sciences", Arabe: "Arabe", Coran: "Coran" };
 
@@ -22,13 +21,7 @@ export default function CoursesPage() {
   }
 
   return <main className="courses-shell courses-reference-shell">
-    <aside className="sidebar courses-sidebar">
-      <Link className="brand" href="/"><img className="sidebar-logo-image" src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link>
-      <div className="side-label">Famille</div>
-      <nav className="courses-nav">{nav.map(([icon, label, href]) => <Link key={label} className={`side-link ${label === "Cours" ? "active" : ""}`} href={href}><span>{icon}</span><span>{label === "Cours" ? "Cours & ressources" : label}</span>{label === "Cours" && <i aria-hidden="true" />}</Link>)}</nav>
-      <Link className="side-link side-settings-link" href="/parent/settings"><span>⚙</span><span>Paramètres</span></Link>
-      <div className="sidebar-help"><div className="sidebar-help-mark">♥</div><div><strong>Besoin d’aide ?</strong><p>Nos conseillers pédagogiques québécois sont à votre écoute.</p><a href="mailto:bonjour@madrasaquebec.ca">Nous contacter →</a></div></div>
-    </aside>
+    <ParentSidebar active="courses" />
 
     <section className="courses-workspace courses-reference-workspace">
       <header className="courses-header courses-reference-header">

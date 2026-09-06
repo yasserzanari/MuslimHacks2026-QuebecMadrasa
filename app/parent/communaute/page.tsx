@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { communities, type LearningCommunity } from "@/src/domain/communities";
+import { ParentSidebar } from "@/app/parent/parent-sidebar";
 
 const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "#"], ["◌", "Communauté", "/parent/communaute"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "/parent/budget"]];
 
@@ -34,7 +35,7 @@ export default function CommunityPage() {
 
   return (
     <main className="app-shell community-shell">
-      <aside className="sidebar"><Link className="brand" href="/"><img className="sidebar-logo-image" src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link><div className="side-label">Famille</div>{nav.map(([icon, label, href]) => <Link key={label} className={`side-link ${label === "Communauté" ? "active" : ""}`} href={href}><span>{icon}</span><span>{label}</span></Link>)}<div className="sidebar-bottom">🛡️<br /><strong>Besoin d’aide ?</strong><br />Consultez notre guide pour les parents&nbsp;›</div></aside>
+      <ParentSidebar active="community" />
       <section className="community-workspace">
         <header className="community-header"><div><div className="eyebrow">Espace parent · réseau local</div><h1>Communauté / Groupes EXTRA</h1><p>Trouvez ou créez un petit groupe d’apprentissage près de chez vous.</p></div><button className="community-create-button" onClick={() => setShowCreate(true)}>＋&nbsp; Créer un groupe EXTRA</button></header>
         <div className="community-search"><span>⌕</span><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Trouver un groupe local" aria-label="Trouver un groupe local" /></div>

@@ -4,11 +4,13 @@ test.describe("Assistant IA parent", () => {
   test("answers, creates a draft and keeps parent approval explicit", async ({ page }) => {
     await page.goto("/parent/assistant");
 
-    await expect(page.getByRole("heading", { name: "Assistant pour votre famille" })).toBeVisible();
-    await expect(page.getByText("Progression de l’enfant")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Assistant IA parent" })).toBeVisible();
+    await expect(page.getByText("Conseils IA")).toBeVisible();
 
-    await page.getByRole("button", { name: "Que travailler cette semaine ?" }).click();
-    await expect(page.locator(".ai-message.assistant").last()).toContainText("Voici la priorité");
+    await page.getByRole("button", { name: /Résume la progression d’Amine/ }).click();
+    await expect(page.getByLabel("Message à l’assistant")).toHaveValue(/Résume la progression d’Amine/);
+    await page.getByRole("button", { name: "Envoyer ↗" }).click();
+    await expect(page.locator(".ai-message.assistant").last()).toContainText("priorité");
 
     await page.getByRole("button", { name: "Créer une révision de fractions" }).click();
     const job = page.locator(".ai-job").first();
@@ -21,10 +23,10 @@ test.describe("Assistant IA parent", () => {
 
   test("can switch the child before asking for guidance", async ({ page }) => {
     await page.goto("/parent/assistant");
-    await page.getByRole("button", { name: /Sara/ }).click();
-    await expect(page.getByText("Ce que l’assistant peut lire pour Sara.")).toBeVisible();
+    await page.locator(".ai-child-selector button").filter({ hasText: "Sara" }).click();
+    await expect(page.locator(".ai-child-selector button.selected")).toContainText("Sara");
     await page.getByLabel("Message à l’assistant").fill("Comment aider Sara en sciences ?");
-    await page.getByRole("button", { name: "Envoyer" }).click();
+    await page.getByRole("button", { name: "Envoyer ↗" }).click();
     await expect(page.locator(".ai-message.assistant").last()).toBeVisible();
   });
 });

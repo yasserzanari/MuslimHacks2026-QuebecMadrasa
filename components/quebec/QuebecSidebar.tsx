@@ -1,57 +1,34 @@
 "use client";
 
-/**
- * Barre latérale parent.
- *
- * Duplique volontairement le gabarit de `app/parent/page.tsx` : il n'existe pas
- * de `app/parent/layout.tsx`, et le périmètre de cette mission n'autorise dans
- * la page parent que le changement d'un seul href. Toute nouvelle entrée de
- * navigation doit donc être ajoutée aux deux endroits, jusqu'à ce qu'un gabarit
- * partagé soit extrait.
- */
-
 import Link from "next/link";
 
 import type { QuebecDictionary } from "./quebec-dictionary";
 
-const links = [
+const items = [
   ["⌂", "Accueil", "/parent"],
-  ["☷", "Plan de la semaine", "/parent/plan"],
-  ["▣", "Cours", "/parent/cours"],
-  ["✦", "Assistant IA", "#"],
-  ["◌", "Communauté", "/parent/communaute"],
-  ["▤", "Portfolio", "#"],
+  ["▣", "Plan de la semaine", "/parent#plan"],
+  ["▤", "Cours & ressources", "/parent/cours"],
   ["◫", "Parcours Québec", "/parent/parcours-quebec"],
-  ["$", "Budget / Services gratuits", "/parent/budget"],
-];
+  ["✦", "Assistant IA", "/parent/assistant"],
+  ["♧", "Communauté", "/parent/communaute"],
+  ["▱", "Portfolio", "/parent#portfolio"],
+] as const;
 
-const PARCOURS_INDEX = 6;
-
+/** Sidebar dédiée au module, alignée sur le thème DEM montré dans les références. */
 export function QuebecSidebar({ dictionary }: { dictionary: QuebecDictionary }) {
-  return (
-    <aside className="sidebar">
-      <Link className="brand" href="/">
-        <img
-          className="sidebar-logo-image"
-          src="/ui/logo-madrasa-quebec.png"
-          alt={dictionary.sidebar.logoAlt}
-        />
-      </Link>
-      <div className="side-label">{dictionary.sidebar.section}</div>
-      {links.map(([icon, label, href], index) => {
-        const isActive = index === PARCOURS_INDEX;
-        return (
-          <Link
-            key={label}
-            className={`side-link ${isActive ? "active" : ""}`}
-            href={href}
-          >
-            <span>{icon}</span>
-            <span>{label}</span>
-          </Link>
-        );
-      })}
-      <div className="sidebar-bottom">{dictionary.sidebar.privacy}</div>
-    </aside>
-  );
+  return <aside className="quebec-reference-sidebar">
+    <Link className="quebec-reference-brand" href="/">
+      <span className="quebec-brand-mark">⌂</span>
+      <span><strong>Madrasa</strong><small>QUÉBEC NETWORK</small></span>
+    </Link>
+    <Link className="quebec-child-picker" href="/parent">
+      <span className="quebec-child-avatar">A</span>
+      <span><small>ENFANT SÉLECTIONNÉ</small><strong>Adam Benyoussef</strong><em>5e année · Primaire</em></span>
+      <b>⌄</b>
+    </Link>
+    <nav className="quebec-reference-nav" aria-label={dictionary.sidebar.section}>
+      {items.map(([icon, label, href]) => <Link key={label} href={href} className={label === "Parcours Québec" ? "active" : ""}><span>{icon}</span><strong>{label}</strong>{label === "Parcours Québec" ? <em>Actif</em> : null}</Link>)}
+    </nav>
+    <div className="quebec-reference-footer"><Link href="/parent/settings">⚙ Paramètres du compte</Link><small>Règles DEM v2026.1 <i /></small></div>
+  </aside>;
 }

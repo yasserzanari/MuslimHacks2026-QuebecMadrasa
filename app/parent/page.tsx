@@ -1,169 +1,76 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { ParentSidebar } from "@/app/parent/parent-sidebar";
 
-type Locale = "fr" | "en";
+const navigation = [
+  ["⌂", "Accueil", "/parent"],
+  ["▣", "Plan de la semaine", "#plan"],
+  ["▤", "Cours", "/parent/cours"],
+  ["✦", "Parcours Québec", "/parent/parcours-quebec"],
+  ["♧", "Communauté", "#communaute"],
+  ["▱", "Portfolio", "#portfolio"],
+  ["$", "Budget", "#budget"],
+] as const;
 
-const copy = {
-  fr: {
-    nav: ["Accueil", "Plan de la semaine", "Cours", "Assistant IA", "Communauté", "Parcours Québec", "Budget"],
-    family: "Famille",
-    hello: "Bonjour, Amine",
-    familyName: "Amine Benyoussef",
-    next: "Prochaine priorité",
-    nextTitle: "Finaliser le projet d’apprentissage.",
-    nextText: "3 éléments doivent encore être vérifiés avant votre prochaine échéance Québec.",
-    continue: "Continuer",
-    metrics: ["Progression familiale", "À valider", "Échéance Québec"],
-    metricFoot: ["cette semaine", "contenus IA en attente", "Projet d’apprentissage"],
-    activity: "Activité récente",
-    activityIntro: "Ce que vos enfants ont fait aujourd’hui.",
-    live: "EN DIRECT",
-    liveTitle: "Yasmine est en classe maintenant",
-    liveText: "Fractions · compare 1/4 et 3/4 avec son groupe.",
-    liveAction: "Voir la classe",
-    minutes: "il y a",
-    homework: "Derniers devoirs",
-    done: "Terminé",
-    hint: "Indice demandé",
-    added: "Ajouté au plan",
-    steps: "Prochaines étapes",
-    stepsIntro: "Les actions les plus utiles pour avancer.",
-    today: "Aujourd’hui",
-    due: "À faire",
-    review: "Vérifier",
-    reserve: "Réserver",
-    viewPlan: "Voir le plan",
-    studentSpace: "Espace élève",
-    private: "Votre espace reste privé.",
-    aiReview: "Les contenus IA nécessitent votre validation.",
-    soon: "bientôt",
-    settings: "Paramètres",
-    subtitle: "Voici ce qui se passe aujourd’hui avec votre famille.",
-    helpTitle: "Besoin d’aide ?",
-    helpText: "Notre équipe est là pour vous.",
-    contact: "Nous contacter",
-    adviceTitle: "Conseil du jour",
-    adviceText: "Planifiez 15 minutes ce soir pour réviser ensemble ce qui a été appris aujourd’hui.",
-    adviceLink: "Voir des conseils",
-  },
-  en: {
-    nav: ["Home", "Weekly plan", "Courses", "AI assistant", "Community", "Québec path", "Budget"],
-    family: "Family",
-    hello: "Good morning, Amine",
-    familyName: "Amine Benyoussef",
-    next: "Next priority",
-    nextTitle: "Finish the learning project.",
-    nextText: "3 items still need review before your next Québec deadline.",
-    continue: "Continue",
-    metrics: ["Family progress", "To review", "Québec deadline"],
-    metricFoot: ["this week", "AI drafts waiting", "Learning project"],
-    activity: "Recent activity",
-    activityIntro: "What your children did today.",
-    live: "LIVE NOW",
-    liveTitle: "Yasmine is in class now",
-    liveText: "Fractions · comparing 1/4 and 3/4 with her group.",
-    liveAction: "View class",
-    minutes: "ago",
-    homework: "Recent work",
-    done: "Completed",
-    hint: "Hint requested",
-    added: "Added to plan",
-    steps: "Next steps",
-    stepsIntro: "The most useful actions to keep moving.",
-    today: "Today",
-    due: "To do",
-    review: "Review",
-    reserve: "Reserve",
-    viewPlan: "View plan",
-    studentSpace: "Student space",
-    private: "Your family space stays private.",
-    aiReview: "AI content always needs your review.",
-    soon: "soon",
-    settings: "Settings",
-    subtitle: "Here is what is happening with your family today.",
-    helpTitle: "Need help?",
-    helpText: "Our team is here for you.",
-    contact: "Contact us",
-    adviceTitle: "Tip of the day",
-    adviceText: "Plan 15 minutes tonight to review together what was learned today.",
-    adviceLink: "View tips",
-  },
-} as const;
+const children = [
+  { name: "Amine", age: "5e année", progress: 72, accent: "blue", avatar: "A", subjects: [["Français", true], ["Mathématiques", true], ["Univers social", false], ["Sciences", true]] },
+  { name: "Sara", age: "3e année", progress: 58, accent: "lilac", avatar: "S", subjects: [["Français", true], ["Mathématiques", true], ["Univers social", false], ["Sciences", false]] },
+] as const;
 
-const routes = ["/parent", "/parent/plan", "/parent/cours", "/parent/assistant", "/parent/communaute", "/parent/parcours-quebec", "/parent/budget"];
-const icons = ["⌂", "☷", "▣", "✦", "◌", "◫", "$"];
+const actions = [
+  { icon: "▤", title: "Finaliser le projet d'apprentissage", meta: "Amine — Le système solaire", cta: "Ouvrir", href: "/parent/parcours-quebec", tone: "green" },
+  { icon: "♢", title: "Assigner la leçon de fractions", meta: "Adam — Mathématiques", cta: "Assigner", href: "/parent/cours", tone: "green" },
+  { icon: "♧", title: "Confirmer la séance du pod", meta: "Groupe 3e année — Samedi 9 h 00", cta: "Confirmer", href: "#communaute", tone: "green" },
+] as const;
+
+const activity = [
+  ["▤", "Amine a soumis son texte d'opinion.", "Français — 5e année", "Aujourd'hui, 10 h 15", "green"],
+  ["✓", "Sara a complété la leçon sur les solides.", "Mathématiques — 3e année", "Hier, 16 h 40", "solid"],
+  ["♧", "Séance de pod non confirmée pour samedi.", "Groupe 3e année — 9 h 00", "Hier, 14 h 22", "green"],
+  ["▱", "Nouveau document ajouté au portfolio d'Amine.", "Projet — Le système solaire", "Hier, 11 h 03", "green"],
+] as const;
+
+const calendar = [
+  ["27", "muted"], ["28", "muted"], ["29", "muted"], ["30", "muted"], ["1", ""], ["2", ""], ["3", ""],
+  ["4", ""], ["5", ""], ["6", ""], ["7", ""], ["8", ""], ["9", ""], ["10", ""],
+  ["11", ""], ["12", ""], ["13", ""], ["14", ""], ["15", ""], ["16", "today"], ["17", ""],
+  ["18", ""], ["19", ""], ["20", ""], ["21", ""], ["22", ""], ["23", ""], ["24", ""],
+  ["25", ""], ["26", ""], ["27", ""], ["28", ""], ["29", ""], ["30", ""], ["31", ""],
+] as const;
+
+function ProgressRing({ value, accent }: { value: number; accent: "blue" | "lilac" }) {
+  return <div className={`parent-progress-ring ${accent}`} style={{ background: `conic-gradient(var(--progress-color) ${value * 3.6}deg, rgba(255,255,255,.68) 0deg)` }}><div><strong>{value}%</strong><small>Complète</small></div></div>;
+}
 
 export default function ParentPage() {
-  const [locale, setLocale] = useState<Locale>("fr");
-  const t = copy[locale];
+  return <main className="parent-dashboard-shell">
+    <ParentSidebar active="home" showChildPicker={false} />
 
-  useEffect(() => {
-    const saved = window.localStorage.getItem("madrasa-locale");
-    if (saved === "en" || saved === "fr") setLocale(saved);
-    document.documentElement.lang = saved === "en" ? "en" : "fr";
-  }, []);
+    <section className="parent-dashboard-main">
+      <header className="parent-dashboard-header">
+        <div><span className="parent-overline">ESPACE PARENT · SEMAINE DU 12 MAI</span><h1>Tableau de bord parent</h1><p>Bonjour, Amine <span className="wave">👋</span></p><div className="parent-header-description">Accompagnez vos enfants dans un apprentissage aligné<br className="desktop-only" /> sur le parcours québécois, avec foi et confiance.</div></div>
+        <div className="parent-header-actions"><Link href="/parent/onboarding" className="parent-help-button"><span>?</span><small>Aide</small></Link><div className="parent-header-avatar">A</div></div>
+      </header>
 
-  return (
-    <main className="app-shell parent-dashboard">
-      <aside className="sidebar">
-        <Link className="brand" href="/">
-          <img className="sidebar-logo-image" src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" />
-        </Link>
-        <div className="side-label">{t.family}</div>
-        {t.nav.map((label, index) => (
-          <Link key={label} className={"side-link " + (index === 0 ? "active" : "")} href={routes[index]}>
-            <span>{icons[index]}</span><span>{label}</span>
-          </Link>
-        ))}
-        <Link className="side-link side-settings-link" href="/parent/settings"><span>⚙</span><span>{t.settings}</span></Link>
-        <div className="sidebar-help"><div className="sidebar-help-mark">♥</div><div><strong>{t.helpTitle}</strong><p>{t.helpText}</p><a href="mailto:bonjour@madrasaquebec.ca">{t.contact} →</a></div></div>
-        <div className="sidebar-bottom">{t.private}<br />{t.aiReview}</div>
-      </aside>
-
-      <section className="workspace">
-        <div className="workspace-top parent-dashboard-top">
-          <div><h1>{t.hello}</h1><p className="dashboard-subtitle">{t.subtitle}</p></div>
-          <Link className="profile" href="/parent/settings" aria-label={t.settings}>
-            <span className="avatar">A</span><span><strong>{t.familyName}</strong><small>{locale === "fr" ? "Profil parent" : "Parent profile"}</small></span><b aria-hidden="true">›</b>
-          </Link>
-        </div>
-
-        <section className="dash-hero dash-hero-compact">
-          <span className="priority-icon" aria-hidden="true">◎</span>
-          <div><div className="eyebrow" style={{ color: "#ffd34f" }}>{t.next}</div><h2>{t.nextTitle}</h2><p>{t.nextText}</p></div>
-          <Link className="button" href="/parent/parcours-quebec">{t.continue} <span aria-hidden="true">→</span></Link>
-        </section>
-
-        <div className="metrics metrics-compact">
-          <Link href="/student" className="metric-card metric-card-link"><span className="metric-icon progress-icon">↗</span><div><div className="metric-label">{t.metrics[0]}</div><div className="metric-value">67%</div></div><div className="metric-progress"><i /></div></Link>
-          <Link href="/parent/cours" className="metric-card metric-card-link"><span className="metric-icon review-icon">▣</span><div><div className="metric-label">{t.metrics[1]}</div><div className="metric-value">4</div></div><span className="metric-arrow">›</span></Link>
-          <Link href="/parent/parcours-quebec" className="metric-card metric-card-link"><span className="metric-icon deadline-icon">□</span><div><div className="metric-label">{t.metrics[2]}</div><div className="metric-value">30 sept.</div></div><span className="metric-arrow">›</span></Link>
-        </div>
-
-        <div className="dashboard-grid dashboard-live-grid">
-          <section className="panel-card activity-panel">
-            <div className="panel-heading-row"><div className="panel-title"><span className="panel-title-icon">↯</span><div><h3>{t.activity}</h3><p>{t.activityIntro}</p></div></div><Link className="panel-link" href="/parent/plan">{t.viewPlan} →</Link></div>
-            <Link className="live-child-card" href="/student/live/fractions">
-              <span className="live-illustration" aria-hidden="true">▣</span><div><span className="live-label"><i className="live-pulse" aria-hidden="true" />{t.live}</span><strong>{t.liveTitle}</strong><p>{t.liveText}</p><span className="live-action">{t.liveAction} →</span></div><span className="live-card-arrow" aria-hidden="true">↗</span>
-            </Link>
-            <div className="activity-list">
-              <Link className="activity-row" href="/student/cours/fractions"><span className="activity-avatar adam">A</span><span><strong>Adam a terminé « Fractions »</strong><small>Mathématiques · 25 min · {t.minutes} 12 min</small></span><b className="activity-status done">✓</b></Link>
-              <Link className="activity-row" href="/student/cours/fractions"><span className="activity-avatar sara">S</span><span><strong>Sara a demandé un indice</strong><small>Sciences et technologie · {t.minutes} 28 min</small></span><b className="activity-status">▣</b></Link>
-              <Link className="activity-row" href="/parent/plan"><span className="activity-avatar plan">Y</span><span><strong>Leçon de français ajoutée au plan</strong><small>Pour Adam · demain à 9 h</small></span><b className="activity-status">▤</b></Link>
-            </div>
-          </section>
-
-          <section className="panel-card next-steps-panel">
-            <div className="panel-heading-row"><div className="panel-title"><span className="panel-title-icon">⚑</span><div><h3>{t.steps}</h3><p>{t.stepsIntro}</p></div></div><Link className="panel-link" href="/student">{t.studentSpace} →</Link></div>
-            <Link className="next-step-card primary-step" href="/student/cours/fractions"><span className="step-number">1</span><span className="step-icon step-icon-book">▤</span><span><small>{t.today} · Adam</small><strong>Terminer les fractions</strong><em>20 min · reprendre la leçon</em></span><b aria-hidden="true">→</b></Link>
-            <Link className="next-step-card" href="/parent/communaute"><span className="step-number">2</span><span className="step-icon step-icon-lab">♧</span><span><small>Jeudi · Sara</small><strong>Rejoindre la classe de sciences</strong><em>16 h 30 · 6 places disponibles</em></span><b aria-hidden="true">→</b></Link>
-            <Link className="next-step-card" href="/parent/parcours-quebec"><span className="step-number">3</span><span className="step-icon step-icon-check">▣</span><span><small>Avant le 30 septembre</small><strong>Vérifier le projet Québec</strong><em>3 éléments restants</em></span><b aria-hidden="true">→</b></Link>
-          </section>
-        </div>
-        <section className="dashboard-advice"><span className="advice-icon">□</span><strong>{t.adviceTitle}</strong><p>{t.adviceText}</p><span className="advice-leaf" aria-hidden="true">❧</span><a href="/parent/plan">{t.adviceLink} →</a></section>
+      <section className="parent-feature-strip" aria-label="Résumé des espaces parent">
+        <Link href="/parent/parcours-quebec"><span className="feature-strip-icon">♧</span><div><strong>Parcours<br />Québec</strong><small>Compétences et contenus conformes au MEQ</small></div></Link>
+        <div><span className="feature-strip-icon">▤</span><div><strong>Apprentissage</strong><small>Leçons, projets et évaluations adaptés à chaque enfant</small></div></div>
+        <div><span className="feature-strip-icon">♧</span><div><strong>Communauté</strong><small>Pods, événements et entraide entre familles</small></div></div>
+        <div><span className="feature-strip-icon">▱</span><div><strong>Portfolio</strong><small>Suivez les progrès et conservez leurs réalisations</small></div></div>
       </section>
-    </main>
-  );
+
+      <div className="parent-dashboard-columns">
+        <div className="parent-dashboard-left">
+          <section className="parent-section-block" aria-labelledby="progression-title"><div className="parent-section-heading"><h2 id="progression-title">Progression de la semaine</h2><Link href="#portfolio">Voir le détail <span>→</span></Link></div><div className="parent-child-list">{children.map((child) => <article className={`parent-child-card ${child.accent}`} key={child.name}><div className={`parent-avatar parent-avatar-${child.accent}`}>{child.avatar}</div><div className="parent-child-name"><strong>{child.name}</strong><small>{child.age}</small></div><ProgressRing value={child.progress} accent={child.accent} /><ul>{child.subjects.map(([subject, done]) => <li className={done ? "done" : "pending"} key={subject}><span>{done ? "✓" : "○"}</span>{subject}</li>)}</ul></article>)}</div></section>
+
+          <section className="parent-panel parent-activity-panel" aria-labelledby="activity-title"><div className="parent-panel-heading"><h2 id="activity-title">Activité récente</h2><button aria-label="Filtrer l'activité">⋯</button></div><div className="parent-activity-list">{activity.map(([icon, title, meta, date, tone]) => <div className="parent-activity-row" key={title}><span className={`parent-activity-icon ${tone}`}>{icon}</span><div><strong>{title}</strong><small>{meta}</small></div><time>{date}</time></div>)}</div><Link className="parent-panel-link" href="#activite">Voir toute l'activité <span>→</span></Link></section>
+        </div>
+
+        <div className="parent-dashboard-right">
+          <section className="parent-section-block" aria-labelledby="actions-title"><div className="parent-section-heading"><h2 id="actions-title">Prochaines actions</h2><span className="parent-count-badge">3</span></div><div className="parent-action-list">{actions.map((action) => <Link className="parent-action-row" href={action.href} key={action.title}><span className={`parent-action-icon ${action.tone}`}>{action.icon}</span><div><strong>{action.title}</strong><small>{action.meta}</small></div><span className="parent-action-cta">{action.cta}<b>›</b></span></Link>)}</div><div className="parent-deadline"><span className="parent-action-icon amber">!</span><div><strong>Échéance à vérifier</strong><small>Le projet d'apprentissage d'Amine arrive à échéance<br />Date limite : 23 mai 2025</small></div><Link href="/parent/parcours-quebec">Voir les détails <b>›</b></Link></div></section>
+
+          <section id="plan" className="parent-section-block parent-upcoming" aria-labelledby="upcoming-title"><div className="parent-section-heading"><h2 id="upcoming-title">Plan de la semaine</h2><Link href="#plan">Voir le calendrier <span>→</span></Link></div><div className="parent-upcoming-grid"><div className="parent-calendar"><div className="calendar-heading"><button aria-label="Mois précédent">‹</button><strong>Mai 2025</strong><button aria-label="Mois suivant">›</button></div><div className="calendar-week"><span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span></div><div className="calendar-days">{calendar.map(([day, state], index) => <span className={state} key={`${day}-${index}`}>{day}</span>)}</div></div><div className="parent-event-list"><div className="parent-event"><span className="event-icon green">♧</span><div><strong>Séance de pod — 3e année</strong><small>Samedi 17 mai</small></div><time>9 h 00</time></div><div className="parent-event"><span className="event-icon blue">▤</span><div><strong>Sortie éducative — Musée de la civilisation</strong><small>Mardi 20 mai</small></div><time>10 h 00</time></div><div className="parent-event"><span className="event-icon blue">▣</span><div><strong>Remise : Projet d'apprentissage</strong><small>Vendredi 23 mai</small></div><time>23 h 59</time></div></div></div></section>
+        </div>
+      </div>
+    </section>
+  </main>;
 }

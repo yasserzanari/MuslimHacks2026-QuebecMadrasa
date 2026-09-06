@@ -4,12 +4,19 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { WeekSession } from "@/src/domain/week-plan";
 import { courses } from "@/src/domain/course-catalog";
+import { ParentSidebar } from "@/app/parent/parent-sidebar";
 
 const days = [
   ["Lun", "2026-09-07"], ["Mar", "2026-09-08"], ["Mer", "2026-09-09"], ["Jeu", "2026-09-10"], ["Ven", "2026-09-11"], ["Sam", "2026-09-12"], ["Dim", "2026-09-13"],
 ] as const;
 const slots = ["08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00"];
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/assistant"], ["◌", "Communauté", "/parent/communaute"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget", "/parent/budget"]];
+const defaultPrayerPlan = [
+  { name: "Fajr", time: "05:30", preparation: 15, duration: 10, tone: "fajr" },
+  { name: "Dhuhr", time: "12:45", preparation: 10, duration: 10, tone: "dhuhr" },
+  { name: "Asr", time: "16:30", preparation: 10, duration: 10, tone: "asr" },
+  { name: "Maghrib", time: "19:15", preparation: 15, duration: 10, tone: "maghrib" },
+  { name: "Isha", time: "20:45", preparation: 15, duration: 15, tone: "isha" },
+] as const;
 
 function formatWeek() { return "7 – 13 septembre 2026"; }
 function typeLabel(type: WeekSession["type"]) { return ({ lesson: "Leçon", review: "Révision", group: "Classe en groupe", islamic: "Études islamiques" })[type]; }
@@ -23,6 +30,9 @@ export default function ParentPlanPage() {
   const [blockingMode, setBlockingMode] = useState(false);
   const [adjusting, setAdjusting] = useState(false);
   const [message, setMessage] = useState("");
+  const [prayerCity, setPrayerCity] = useState("Montréal");
+  const [prayerDate, setPrayerDate] = useState("2026-09-07");
+  const [prayers, setPrayers] = useState(defaultPrayerPlan.map((prayer) => ({ ...prayer })));
 
   async function loadPlan(id = childId) {
     const response = await fetch(`/api/week-plan?childId=${id}`);
@@ -52,12 +62,16 @@ export default function ParentPlanPage() {
     setAdjusting(true);
     window.setTimeout(() => { setAdjusting(false); setMessage("Suggestion IA prête : 4 séances réparties sans créneau indisponible."); window.setTimeout(() => setMessage(""), 2800); }, 900);
   };
+  const updatePrayer = (name: string, field: "time" | "preparation" | "duration", value: string) => {
+    setPrayers((items) => items.map((prayer) => prayer.name === name ? { ...prayer, [field]: field === "time" ? value : Math.max(0, Number(value) || 0) } : prayer));
+  };
 
   return <main className="app-shell plan-shell">
-    <aside className="sidebar"><Link className="brand" href="/"><img className="sidebar-logo-image" src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link><div className="side-label">Famille</div>{nav.map(([icon, label, href]) => <Link key={label} className={`side-link ${label === "Plan de la semaine" ? "active" : ""}`} href={href}><span>{icon}</span><span>{label}</span></Link>)}<div className="sidebar-bottom">Votre espace reste privé.<br />Les contenus générés par l’IA nécessitent votre validation.</div></aside>
+    <ParentSidebar active="plan" />
     <section className="workspace plan-workspace">
       <div className="workspace-top"><div><div className="eyebrow">Espace parent · organisation familiale</div><h1>Plan de la semaine</h1></div><div className="profile"><span className="avatar">AG</span><span>Famille Ghorbel⌄</span></div></div>
       <div className="plan-toolbar"><div><p className="plan-kicker">Semaine actuelle</p><h2>{formatWeek()}</h2><p className="plan-muted">Glissez une séance sur un autre créneau pour réorganiser la semaine.</p></div><div className="plan-controls"><button className={`block-toggle ${blockingMode ? "selected" : ""}`} onClick={() => setBlockingMode((value) => !value)}>{blockingMode ? "✓ Sélection terminée" : "▦ Bloquer des créneaux"}</button><button className="ai-adjust" onClick={adjustWithAi} disabled={adjusting}><span>✦</span>{adjusting ? "Analyse en cours…" : "Ajuster avec l’IA"}</button><div className="week-arrows"><button aria-label="Semaine précédente">‹</button><button aria-label="Semaine suivante">›</button></div><label>Enfant<select value={childId} onChange={(event) => setChildId(event.target.value)}><option value="adam">Adam · 10 ans</option><option value="sara">Sara · 14 ans</option></select></label></div></div>
+      <section className="prayer-calendar-card" aria-labelledby="prayer-calendar-title"><div className="prayer-calendar-heading"><div><p className="plan-kicker">Repère familial configurable</p><h2 id="prayer-calendar-title">Prières du jour</h2><p>Les horaires sont indicatifs : adaptez-les selon la ville, la date et votre référence locale.</p></div><span className="prayer-calendar-badge">☽ 5 temps</span></div><div className="prayer-calendar-controls"><label>Ville<input value={prayerCity} onChange={(event) => setPrayerCity(event.target.value)} /></label><label>Date<input type="date" value={prayerDate} onChange={(event) => setPrayerDate(event.target.value)} /></label><span className="prayer-config-note">Configuration locale · {prayerCity || "ville à préciser"} · {prayerDate}</span></div><div className="prayer-block-grid">{prayers.map((prayer) => <article className={`prayer-block ${prayer.tone}`} key={prayer.name}><div className="prayer-block-top"><strong>{prayer.name}</strong><label>Heure<input aria-label={`Heure ${prayer.name}`} type="time" value={prayer.time} onChange={(event) => updatePrayer(prayer.name, "time", event.target.value)} /></label></div><div className="prayer-block-details"><label>Wudu / préparation<input aria-label={`Préparation ${prayer.name} en minutes`} type="number" min="0" max="60" value={prayer.preparation} onChange={(event) => updatePrayer(prayer.name, "preparation", event.target.value)} /></label><label>Durée<input aria-label={`Durée ${prayer.name} en minutes`} type="number" min="1" max="90" value={prayer.duration} onChange={(event) => updatePrayer(prayer.name, "duration", event.target.value)} /></label></div><small>Bloc familial · {prayer.preparation} min avant + {prayer.duration} min</small></article>)}</div></section>
       {blockingMode && <div className="blocking-banner" role="status"><span>▦</span><div><strong>Mode disponibilités activé</strong><small>Cliquez sur les cases libres pour les rendre indisponibles. Cliquez à nouveau pour les libérer.</small></div></div>}
       <div className="plan-layout"><section className="calendar-card" aria-label="Calendrier hebdomadaire">
         <div className="calendar-head"><div className="time-head">Heure</div>{days.map(([label, date], index) => <div className={`day-head ${index === 0 ? "today" : ""}`} key={date}><b>{label}</b><strong>{date.slice(8)}</strong></div>)}</div>

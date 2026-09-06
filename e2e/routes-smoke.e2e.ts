@@ -2,6 +2,7 @@ import { expect, test } from "@playwright/test";
 
 const routes = [
   "/",
+  "/services/mosquees",
   "/parent",
   "/parent/assistant",
   "/parent/budget",
@@ -14,6 +15,15 @@ const routes = [
   "/parent/plan",
   "/parent/settings",
   "/student",
+  "/student/sceance/fonction-affine-102",
+  "/student/jeune",
+  "/student/young",
+  "/student/young/cours",
+  "/student/young/cours/fractions",
+  "/student/young/sceance/memorisation-coran",
+  "/student/young/sceance/lettres-arabes",
+  "/student/young/jeux",
+  "/student/young/progression",
   "/student/cours",
   "/student/cours/fractions",
   "/student/jeux",

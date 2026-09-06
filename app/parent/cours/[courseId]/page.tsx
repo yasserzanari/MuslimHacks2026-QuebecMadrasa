@@ -1,41 +1,30 @@
+"use client";
+
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { useState } from "react";
 import { getCourse } from "@/src/domain/course-catalog";
+
+const tabs = ["Séances & parcours", "Replay des devoirs", "Notes & évaluations", "Insights & Tuteur IA"];
 
 export default function CourseDetailPage({ params }: { params: { courseId: string } }) {
   const course = getCourse(params.courseId);
+  const [activeTab, setActiveTab] = useState(0);
+  const [toast, setToast] = useState("");
   if (!course) notFound();
+  const notify = (message: string) => { setToast(message); window.setTimeout(() => setToast(""), 3000); };
+  const modules = course.modules.length ? course.modules : ["Introduction", "Activité guidée", "Défi de transfert"];
 
-  return (
-    <main className="courses-shell">
-      <aside className="sidebar">
-        <Link className="brand" href="/"><img className="sidebar-logo-image" src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link>
-        <div className="side-label">Famille</div>
-        <Link className="side-link" href="/parent"><span>⌂</span><span>Accueil</span></Link>
-        <Link className="side-link active" href="/parent/cours"><span>▣</span><span>Cours</span></Link>
-        <Link className="side-link" href="/parent/plan"><span>☷</span><span>Plan de la semaine</span></Link>
-        <Link className="side-link" href="/parent/assistant"><span>✦</span><span>Assistant IA</span></Link>
-        <Link className="side-link" href="/parent/settings"><span>⚙</span><span>Paramètres</span></Link>
-        <div className="sidebar-bottom">Les contenus générés par l’IA nécessitent la validation du parent.</div>
-      </aside>
-      <section className="courses-workspace detail-workspace">
-        <Link href="/parent/cours" className="back-link">‹ &nbsp; Retour aux cours</Link>
-        <div className="detail-hero">
-          <div className={`course-visual large ${course.color}`}><span>{course.icon}</span></div>
-          <div>
-            <span className={`course-tag ${course.color}`}>{course.category} · {course.badge}</span>
-            <h1>{course.title}</h1>
-            <p className="detail-level">{course.level} · {course.duration}</p>
-            <p className="detail-description">{course.description}</p>
-            <div className="detail-actions"><Link className="detail-primary" href="/parent/cours">Assigner à un enfant</Link><Link className="detail-secondary" href="/parent/plan">Ajouter au plan</Link></div>
-          </div>
-        </div>
-        <div className="detail-grid">
-          <section className="detail-panel"><div className="panel-kicker">Objectif pédagogique</div><h2>{course.objective}</h2><div className="detail-progress"><div><span>Progression actuelle d’Amine</span><b>{course.progress} %</b></div><div className="bar"><i style={{ width: `${course.progress}%` }} /></div></div></section>
-          <section className="detail-panel"><div className="panel-kicker">Parcours de la leçon</div><ol>{course.modules.map((module, index) => <li key={module}><span>{index + 1}</span><div><strong>{module}</strong><small>{index === 0 ? "Introduction · 5 min" : index === course.modules.length - 1 ? "Défi · 5 min" : "Activité guidée · 8 min"}</small></div></li>)}</ol></section>
-        </div>
-        <section className="tutor-preview"><div className="tutor-avatar">✦</div><div><span className="panel-kicker">Tuteur IA élève</span><h2>Il guidera le raisonnement, pas la réponse.</h2><p>Question de départ : « {course.studentPrompt} »</p></div><Link href={`/student/cours/${course.id}`} className="course-open">Voir la vue élève ›</Link></section>
-      </section>
-    </main>
-  );
+  return <main className="reference-course-shell">
+    <aside className="reference-course-sidebar"><div className="reference-course-sidebar-top"><Link className="reference-course-brand" href="/"><img src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link><div className="reference-course-family-label">Espace famille</div><button className="reference-course-child"><span>AB</span><div><strong>Amine Benyoussef</strong><small>5e année (3e cycle)</small></div><b>⌃⌄</b></button><nav aria-label="Navigation du cours" className="reference-course-nav"><Link href="/parent"><span>⌂</span>Accueil Famille</Link><Link href="/parent/cours" className="active"><span>▣</span>Cours &amp; Matières<em>Actif</em></Link><Link href="/parent/plan"><span>☷</span>Plan de la semaine<i /></Link><Link href="/parent/assistant"><span>✦</span>Assistant IA &amp; Tuteur</Link><Link href="/parent/parcours-quebec"><span>◫</span>Bulletins &amp; MEQ</Link><Link href="/parent/settings"><span>⚙</span>Paramètres</Link></nav></div><div className="reference-course-sidebar-bottom"><div className="reference-course-notice">◆ <span>Les parcours et interactions de l'IA sont cadrés selon le programme officiel MEQ et validés par l'équipe pédagogique.</span></div><div className="reference-course-profile"><span>YB</span><div><strong>Youssef B.</strong><small>Compte Parent Pro</small></div><b>↪</b></div></div></aside>
+    <section className="reference-course-main"><header className="reference-course-topbar"><div className="reference-course-breadcrumb"><Link href="/parent/cours">← Retour aux cours</Link><span>/</span><b>{course.category} · {course.level}</b></div><div className="reference-course-tools"><button onClick={() => notify("Tuteur MEQ disponible jusqu’à 17 h 30")}>● Tuteur MEQ disponible</button><button onClick={() => notify("Vue élève ouverte dans la démo")}>◉ Voir la vue élève</button><button aria-label="Télécharger le relevé" onClick={() => notify("Téléchargement du relevé PDF en cours…")}>↓</button></div></header>
+      <div className="reference-course-hero-wrap"><section className="reference-course-hero"><div className="reference-course-hero-content"><div className={`reference-course-icon ${course.color}`}><span>{course.icon}</span><small>Rationnels</small></div><div className="reference-course-copy"><div className="reference-course-tags"><span>{course.category}</span><b>✓ Aligné Programme MEQ</b><small>{course.level}</small></div><h1>{course.title === "Fractions" ? "Fractions & Nombres rationnels" : course.title}</h1><p>{course.description}</p><div className="reference-course-meta"><span>◷ 3 h 30 min estimées</span><span>≡ {modules.length} séances progressives</span><span>✦ Guide IA adaptatif activé</span></div></div></div><div className="reference-course-metrics"><div className="reference-course-progress"><span>Progression d’Amine</span><b>{course.progress} %</b><i><em style={{ width: `${course.progress}%` }} /></i></div><div className="reference-course-metric-grid"><div><small>Moyenne devoirs</small><strong>89 <em>/ 100</em></strong></div><div><small>Compétence C1</small><strong className="validated">✓ Validée</strong></div></div><button onClick={() => notify("Module ajouté au plan de la semaine")}>＋ Assigner au plan de la semaine</button><button className="outline" onClick={() => notify("Bilan MEQ préparé dans la démo")}>▣ Télécharger le bilan MEQ</button></div></section></div>
+      <nav className="reference-course-tabs" aria-label="Sections du cours">{tabs.map((tab, index) => <button key={tab} className={activeTab === index ? "active" : ""} onClick={() => setActiveTab(index)}><span>{["▤", "▶", "▥", "✦"][index]}</span>{tab}{index === 0 && <b>{modules.length}</b>}{index === 1 && <b className="new">Nouveau</b>}{index === 3 && <b>3 alertes</b>}</button>)}</nav>
+      {activeTab === 0 && <div className="reference-course-body"><section className="reference-course-panel"><div className="reference-course-section-heading"><div><span>Parcours d’apprentissage</span><h2>Séances &amp; progression</h2></div><small>Dernière activité : aujourd’hui</small></div><p className="reference-course-intro">Une progression en petites étapes pour consolider les notions et laisser une trace de chaque effort.</p><div className="reference-course-sessions">{modules.map((module, index) => <article className={`reference-course-session ${index === Math.min(1, modules.length - 1) ? "current" : index === modules.length - 1 ? "locked" : ""}`} key={module}><span className="session-number">{index + 1}</span><div><small>{index === 0 ? "INTRODUCTION" : index === modules.length - 1 ? "DÉFI DE TRANSFERT" : "ACTIVITÉ GUIDÉE"}</small><h3>{module}</h3><p>{index === 0 ? "Représenter une fraction dans une situation concrète." : "Observe, explique ton raisonnement et vérifie tes choix."}</p></div><div className="session-meta"><span>{index === 0 ? "✓ Terminé" : index === 1 ? "En cours" : "5 min"}</span><button onClick={() => notify(index === 0 ? "Séance déjà complétée" : "Séance ouverte dans la démo")}>{index === 0 ? "Revoir" : index === 1 ? "Continuer" : "Déverrouillé bientôt"}</button></div></article>)}</div></section><aside className="reference-course-side"><section className="reference-course-side-card"><span className="side-card-kicker">Ressources du cours</span><h3>Pour accompagner Amine</h3><p>Une fiche courte, une activité maison et les preuves à consulter.</p><button onClick={() => notify("Ressources ouvertes")}>Voir les ressources →</button></section><section className="reference-course-ai"><span>✦ TUTEUR IA ÉLÈVE</span><h3>Il guidera le raisonnement, pas la réponse.</h3><p>Question de départ : « Comment sais-tu que 3/4 est plus grand que 2/3 ? »</p><Link href={`/student/cours/${course.id}`}>Voir la vue élève ›</Link></section></aside></div>}
+      {activeTab === 1 && <div className="reference-course-tab-placeholder"><span>▶</span><h2>Replay &amp; playback des devoirs</h2><p>Les traces de raisonnement d’Amine seront regroupées ici pour revoir les moments clés avec le tuteur.</p><button onClick={() => notify("Playback prêt dans la démo")}>Lancer le replay ›</button></div>}
+      {activeTab === 2 && <div className="reference-course-tab-placeholder"><span>▥</span><h2>Notes &amp; évaluations MEQ</h2><p>89 / 100 de moyenne sur les devoirs du module. Les évaluations restent visibles et explicables par l’équipe pédagogique.</p><div className="reference-course-grade-row"><b>Examen formatif · Fractions visuelles</b><strong>92 / 100</strong><em>Acquis</em></div><div className="reference-course-grade-row"><b>Devoir guidé · Comparaison</b><strong>88 / 100</strong><em>Validé</em></div></div>}
+      {activeTab === 3 && <div className="reference-course-insights"><section><span>✦ SYNTHÈSE PÉDAGOGIQUE POUR LE PARENT</span><h2>Le prochain bon geste : consolider les dénominateurs différents.</h2><p>Les observations suggèrent de privilégier deux séances courtes avec manipulation visuelle, puis une explication écrite.</p></section><div className="reference-course-insight-grid"><article><b>Points forts</b><h3>Représentation visuelle</h3><p>Amine visualise bien les parts d’un tout et persévère lorsqu’il est guidé.</p></article><article className="amber"><b>À consolider</b><h3>Comparer 7/8 et 5/6</h3><p>Une hésitation apparaît lorsque les dénominateurs sont différents.</p></article><article><b>Conseil maison</b><h3>10 minutes en cuisine</h3><p>Utiliser des tasses à mesurer pour parler de 1/2, 1/4 et 3/4.</p></article></div></div>}
+      <footer className="reference-course-footer"><span>Madrasa Québec Network</span><span>Programme d’études MEQ · Confidentialité · Support aux parents</span></footer>{toast && <div className="reference-course-toast" role="status">✓ {toast}</div>}
+    </section>
+  </main>;
 }

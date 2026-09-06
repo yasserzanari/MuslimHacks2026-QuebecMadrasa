@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("senior student lesson matches the advanced reference and supports guided work", async ({ page }) => {
-  await page.goto("/student");
+  await page.goto("/student/sceance/fonction-affine-102");
   await expect(page.getByRole("heading", { name: "Fonctions affines — comprendre la pente" })).toBeVisible();
   await expect(page.getByText("Question 3 sur 8")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Que remarques-tu quand la pente augmente ?" })).toBeVisible();

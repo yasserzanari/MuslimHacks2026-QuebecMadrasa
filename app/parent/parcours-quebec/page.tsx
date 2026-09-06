@@ -33,7 +33,7 @@ import {
   QuebecProjectForm,
   type ProjectDraft,
 } from "@/components/quebec/QuebecProjectForm";
-import { QuebecSidebar } from "@/components/quebec/QuebecSidebar";
+import { ParentSidebar } from "@/app/parent/parent-sidebar";
 import { QuebecTimeline } from "@/components/quebec/QuebecTimeline";
 import { QuebecUrgentCard } from "@/components/quebec/QuebecUrgentCard";
 import { getQuebecDictionary } from "@/components/quebec/quebec-dictionary";
@@ -46,6 +46,7 @@ import {
 } from "@/components/quebec/quebec-selectors";
 
 const SCHOOL_YEARS = ["2026-2027", "2027-2028"] as const;
+type QuebecStep = "situation" | "declaration" | "suivi" | "obligations" | "projet" | "export";
 
 /** Date de repli tant que le navigateur n'a pas monté la page. */
 const SSR_TODAY = "2026-09-05";
@@ -91,6 +92,7 @@ export default function ParcoursQuebecPage() {
   const [submissions, setSubmissions] = useState<
     Readonly<Partial<Record<RequirementId, FamilySubmission>>>
   >({});
+  const [activeStep, setActiveStep] = useState<QuebecStep>("declaration");
 
   const computation = useMemo(
     () =>
@@ -178,8 +180,8 @@ export default function ParcoursQuebecPage() {
   };
 
   return (
-    <main className="app-shell">
-      <QuebecSidebar dictionary={dictionary} />
+    <main className="app-shell quebec-page-shell">
+      <ParentSidebar active="quebec" />
 
       <section className="workspace quebec-workspace">
         {/*
@@ -235,86 +237,25 @@ export default function ParcoursQuebecPage() {
         </p>
 
         <nav className="quebec-journey" aria-label={locale === "fr" ? "Étapes du parcours" : "Path steps"}>
-          <div className="quebec-journey-intro"><span className="quebec-journey-mark">01—06</span><strong>{locale === "fr" ? "Votre chemin, étape par étape" : "Your path, step by step"}</strong><span>{locale === "fr" ? "Ouvrez une étape pour comprendre quoi faire." : "Open a step to understand what to do."}</span></div>
-          {[
-            ["01", locale === "fr" ? "Situation" : "Situation", "situation", "⌂"],
-            ["02", locale === "fr" ? "Avis de déclaration" : "Notice of intent", "avis-declaration", "↗"],
-            ["03", locale === "fr" ? "Suivi annuel" : "Annual follow-up", "suivi", "◷"],
-            ["04", locale === "fr" ? "Obligations" : "Requirements", "obligations", "✓"],
-            ["05", locale === "fr" ? "Projet d’apprentissage" : "Learning project", "projet", "✎"],
-            ["06", locale === "fr" ? "Exporter" : "Export", "export", "↓"],
-          ].map(([number, label, slug, icon]) => <a className="quebec-journey-card" key={slug} href={`/parent/parcours-quebec/${slug}`}><span>{number}</span><i>{icon}</i><strong>{label}</strong><em>→</em></a>)}
+          {([
+            ["01", locale === "fr" ? "Situation" : "Situation", "situation", "⌂", locale === "fr" ? "Profil & paramètres" : "Profile & settings"],
+            ["02", locale === "fr" ? "Avis déclaration" : "Notice of intent", "declaration", "↗", urgent?.urgency === "overdue" ? "En retard de 67 j" : "À préparer"],
+            ["03", locale === "fr" ? "Suivi annuel" : "Annual follow-up", "suivi", "◷", locale === "fr" ? "3 jalons clés" : "3 key milestones"],
+            ["04", locale === "fr" ? "Obligations (11)" : "Requirements (11)", "obligations", "✓", locale === "fr" ? "Calendrier complet" : "Full calendar"],
+            ["05", locale === "fr" ? "Projet apprent." : "Learning project", "projet", "✎", locale === "fr" ? "Matières & heures" : "Subjects & hours"],
+            ["06", locale === "fr" ? "Exporter" : "Export", "export", "↓", locale === "fr" ? "JSON & PDF zippé" : "JSON & zipped PDF"],
+          ] as const).map(([number, label, step, icon, meta]) => <button type="button" className={`quebec-journey-card ${activeStep === step ? "active" : ""}`} key={step} onClick={() => setActiveStep(step)}><span>{number}</span><i>{icon}</i><strong>{label}</strong><small>{meta}</small>{step === "declaration" && urgent?.urgency === "overdue" ? <em>Action urgente</em> : null}</button>)}
         </nav>
 
-        <QuebecUrgentCard
-          urgent={urgent}
-          second={second}
-          dictionary={dictionary}
-          locale={locale}
-        />
-
-        <QuebecAnchorPanel
-          dictionary={dictionary}
-          schoolYear={schoolYear}
-          schoolYearOptions={SCHOOL_YEARS}
-          onSchoolYearChange={setSchoolYear}
-          hasLeftSchool={hasLeftSchool}
-          onHasLeftSchoolChange={handleExitToggle}
-          exitDate={exitDate}
-          onExitDateChange={handleExitDate}
-          implementationDate={implementationDate}
-          onImplementationDateChange={setImplementationDate}
-          evaluationMode={evaluationMode}
-          onEvaluationModeChange={setEvaluationMode}
-          issues={computation.issues}
-          exitClassification={computation.exitClassification}
-        />
-
-        <QuebecAvisGenerator
-          fieldValues={fieldValues}
-          onFieldChange={handleFieldChange}
-          dictionary={dictionary}
-          locale={locale}
-          now={`${now}T12:00:00.000Z`}
-        />
-
-        <QuebecJointCard
-          deadlines={jointDeadlines}
-          hasDivergence={jointDivergence}
-          ministryRecordName={jointGroup.ministryRecordName}
-          dictionary={dictionary}
-          locale={locale}
-        />
-
-        <QuebecTimeline
-          deadlines={computation.deadlines}
-          statuses={statuses}
-          onAdvance={handleAdvance}
-          dictionary={dictionary}
-          locale={locale}
-        />
-
-        <QuebecProjectForm
-          draft={projectDraft}
-          onChange={(draft) => {
-            setProjectDraft(draft);
-            setProjectSaved(false);
-          }}
-          onSave={() => setProjectSaved(true)}
-          saved={projectSaved}
-          dictionary={dictionary}
-        />
-
-        {computation.schoolYear ? (
-          <QuebecExportCard
-            schoolYear={computation.schoolYear}
-            deadlines={computation.deadlines}
-            dictionary={dictionary}
-            locale={locale}
-            now={now}
-            catalogueVersion={QUEBEC_CATALOGUE_VERSION}
-          />
-        ) : null}
+        <div className="quebec-tab-panel" role="tabpanel" aria-live="polite">
+          {activeStep === "declaration" ? <QuebecUrgentCard urgent={urgent} second={second} dictionary={dictionary} locale={locale} /> : null}
+          {activeStep === "situation" ? <QuebecAnchorPanel dictionary={dictionary} schoolYear={schoolYear} schoolYearOptions={SCHOOL_YEARS} onSchoolYearChange={setSchoolYear} hasLeftSchool={hasLeftSchool} onHasLeftSchoolChange={handleExitToggle} exitDate={exitDate} onExitDateChange={handleExitDate} implementationDate={implementationDate} onImplementationDateChange={setImplementationDate} evaluationMode={evaluationMode} onEvaluationModeChange={setEvaluationMode} issues={computation.issues} exitClassification={computation.exitClassification} /> : null}
+          {activeStep === "declaration" ? <QuebecAvisGenerator fieldValues={fieldValues} onFieldChange={handleFieldChange} dictionary={dictionary} locale={locale} now={`${now}T12:00:00.000Z`} /> : null}
+          {activeStep === "suivi" ? <QuebecJointCard deadlines={jointDeadlines} hasDivergence={jointDivergence} ministryRecordName={jointGroup.ministryRecordName} dictionary={dictionary} locale={locale} /> : null}
+          {activeStep === "obligations" ? <QuebecTimeline deadlines={computation.deadlines} statuses={statuses} onAdvance={handleAdvance} dictionary={dictionary} locale={locale} /> : null}
+          {activeStep === "projet" ? <QuebecProjectForm draft={projectDraft} onChange={(draft) => { setProjectDraft(draft); setProjectSaved(false); }} onSave={() => setProjectSaved(true)} saved={projectSaved} dictionary={dictionary} /> : null}
+          {activeStep === "export" && computation.schoolYear ? <QuebecExportCard schoolYear={computation.schoolYear} deadlines={computation.deadlines} dictionary={dictionary} locale={locale} now={now} catalogueVersion={QUEBEC_CATALOGUE_VERSION} /> : null}
+        </div>
       </section>
     </main>
   );

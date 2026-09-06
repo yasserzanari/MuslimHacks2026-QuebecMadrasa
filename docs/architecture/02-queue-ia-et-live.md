@@ -21,6 +21,18 @@ Le calendrier n'est jamais modifié directement par l'IA.
 
 Les outils documentés dans `src/domain/parent-ai-tools.ts` sont les seuls contrats autorisés : snapshot d'apprentissage, preuves, plan de semaine, exigences Québec, cours approuvés, création/lecture/approbation/annulation d'un job. Toute implémentation serveur vérifie le `parentId`, le `childId` et les permissions.
 
+## Assistant parent — flux de démonstration MVP
+
+La page `/parent/assistant` suit un flux visible et compréhensible :
+
+1. Une suggestion remplit le champ de message sans l'envoyer.
+2. À l'envoi, l'interface affiche les étapes : compréhension, lecture des données, analyse, réponse.
+3. Chaque demande affiche l'outil simulé utilisé : `Progression de l’enfant`, `Cours approuvés`, `Plan de la semaine`, `Calendrier familial` ou `Analyse de séance`.
+4. Une réponse courte cite ses sources. Une demande de cours peut créer un `generation_job`.
+5. Le brouillon apparaît dans la file avec les actions `Approuver`, `Rejeter` puis `Ajouter au plan`; aucune action ne modifie le calendrier sans validation parentale.
+
+Le prototype utilise des délais locaux pour rendre la séquence observable pendant une présentation. En production, ces étapes seront alimentées par les événements du worker et chaque outil sera exécuté côté serveur avec le contexte de la famille.
+
 ## Classe live
 
 Le prototype doit simuler :

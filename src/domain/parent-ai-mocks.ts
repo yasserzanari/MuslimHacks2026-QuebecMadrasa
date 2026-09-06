@@ -17,14 +17,46 @@ export const parentAssistantPrompts = {
 export function detectParentAssistantIntent(message: string): ParentAssistantIntent {
   const value = message.toLowerCase();
   if (value.includes("devoir") || value.includes("cours") || value.includes("révision") || value.includes("revision")) return "lesson";
+  if (value.includes("progression") || value.includes("progrès") || value.includes("difficile") || value.includes("bloque") || value.includes("preuve")) return "progress";
   if (value.includes("semaine") || value.includes("plan") || value.includes("travailler")) return "week";
-  if (value.includes("progression") || value.includes("progrès") || value.includes("difficile")) return "progress";
   return "general";
 }
 
 export function mockParentAssistantResponse(intent: ParentAssistantIntent, childName: string) {
-  if (intent === "lesson") return { title: "Je peux préparer une révision ciblée", body: `${childName} a déjà une base sur les fractions. Je préparerais une activité courte pour comparer deux fractions, avec une question guidée avant la réponse. Le brouillon restera en attente de votre validation.`, sources: ["Progression récente", "Cours Fractions"], action: "Créer une révision" };
-  if (intent === "week") return { title: `Voici la priorité pour ${childName}`, body: "Le meilleur prochain pas est de terminer Fractions, puis de réserver une classe de sciences. Le plan actuel laisse environ 45 minutes disponibles pour une révision guidée.", sources: ["Progression récente", "Plan de la semaine"], action: "Créer une révision" };
-  if (intent === "progress") return { title: `Résumé de la progression de ${childName}`, body: "La progression est régulière. Les fractions restent le point à consolider et la participation aux activités de groupe est un bon levier. Ces observations décrivent des activités, pas un diagnostic.", sources: ["Activités des 14 derniers jours", "Preuves d’apprentissage"], action: "Voir les preuves" };
-  return { title: "Je peux vous aider à planifier", body: "Je peux résumer la progression, proposer les prochaines actions ou préparer un brouillon de devoir. Choisissez une action ci-dessous pour garder le contrôle sur ce qui est créé.", sources: ["Contexte familial autorisé"], action: "Proposer la semaine" };
+  if (intent === "lesson") return {
+    title: `Je peux construire le bon cours pour ${childName}`,
+    body: `${childName} n’a pas besoin d’un cours générique. Je vais créer une courte mission de sciences basée sur son niveau actuel, son énergie et sa façon préférée d’apprendre. Répondez à ces deux questions : vos choix seront intégrés au brouillon avant son ajout dans la file de génération.`,
+    sources: ["Cours approuvés", "Progression récente"], action: "Créer une révision",
+    followUps: [
+      { label: "Objectif : comprendre", prompt: `Pour ${childName}, objectif : comprendre le concept avec un exemple concret.` },
+      { label: "Format : jeu-défi", prompt: `Pour ${childName}, format : jeu-défi interactif avec indices.` },
+      { label: "Format : expérience", prompt: `Pour ${childName}, format : expérience guidée à faire à la maison.` },
+      { label: "Durée : 15 minutes", prompt: `Créer un cours de sciences de 15 minutes pour ${childName}.` },
+    ],
+  };
+
+  if (intent === "week") return {
+    title: `Voici quoi faire cette semaine pour ${childName}`,
+    body: `Je recommande d’abord 20 minutes de fractions mardi, puis une activité de sciences jeudi. Le plan laisse environ 45 minutes libres; cela respecte le rythme actuel sans ajouter une séance inutile.`,
+    sources: ["Progression récente", "Plan de la semaine"], action: "Créer une révision",
+    followUps: [{ label: "Voir le plan détaillé", prompt: "Montre-moi le plan détaillé de cette semaine" }, { label: "Réserver mardi 20 min", prompt: "Planifie 20 minutes de révision mardi" }, { label: "Préparer la séance", prompt: "Créer une révision pour cette semaine" }],
+  };
+
+  if (intent === "progress" && childName === "Sara") return {
+    title: "Sara ne manque pas de capacité — elle manque de méthode au bon moment",
+    body: "Cette semaine, Sara a réussi 8 activités sur 10. Elle comprend les fractions simples, mais perd confiance quand il faut comparer des dénominateurs différents. Les traces montrent qu’elle demande de l’aide après la première étape; une démonstration visuelle puis une question guidée devraient débloquer le raisonnement.",
+    sources: ["Activités des 14 derniers jours", "Preuves d’apprentissage"], action: "Voir les preuves",
+    followUps: [{ label: "Voir les 4 erreurs", prompt: "Montre les 4 erreurs de Sara en fractions" }, { label: "Écouter sa séance", prompt: "Analyse la dernière séance de Sara" }, { label: "Créer une séance guidée", prompt: "Créer une révision de fractions guidée pour Sara" }],
+  };
+
+  if (intent === "progress") return {
+    title: `La semaine d’apprentissage de ${childName} en un coup d’œil`,
+    body: `Très bon rythme cette semaine : ${childName} a complété 9 activités sur 11 et progresse particulièrement en sciences. Le seul point qui ralentit encore son raisonnement est la comparaison de fractions lorsque les dénominateurs sont différents. Voici les faits observés et la priorité que je recommande pour la prochaine séance.`,
+    sources: ["Activités des 14 derniers jours", "Preuves d’apprentissage"],
+    progressReport: { metrics: [{ label: "Activités terminées", value: "9 / 11", detail: "+2 vs semaine passée", tone: "green" }, { label: "Temps actif", value: "2 h 45", detail: "16 min / jour en moyenne", tone: "blue" }, { label: "Réussite moyenne", value: "86 %", detail: "+8 points cette semaine", tone: "gold" }, { label: "Aide demandée", value: "3 fois", detail: "surtout en fractions", tone: "purple" }], rows: [{ subject: "Mathématiques", completed: "4 / 5", score: "78 %", trend: "↗ +5 %", status: "À consolider", tone: "gold" }, { subject: "Sciences", completed: "3 / 3", score: "94 %", trend: "↗ +12 %", status: "Très solide", tone: "green" }, { subject: "Français", completed: "2 / 2", score: "88 %", trend: "→ Stable", status: "En bonne voie", tone: "blue" }, { subject: "Lecture", completed: "1 / 1", score: "91 %", trend: "↗ +4 %", status: "Très solide", tone: "purple" }], strengths: ["Explique bien son raisonnement à l’oral", "Commence ses activités sans rappel", "Réussit les exercices courts de sciences"], focus: { title: "Fractions : comparer des dénominateurs différents", detail: "3 hésitations observées sur 5 exercices; l’erreur arrive après la lecture de la question, pas dans le calcul final.", priority: "Priorité 1" } },
+    action: "Voir les preuves",
+    followUps: [{ label: "Voir les preuves détaillées", prompt: `Montre les preuves d’apprentissage de ${childName}` }, { label: "Comparer la semaine passée", prompt: `Compare la progression de ${childName} avec la semaine passée` }, { label: "Planifier 20 min de fractions", prompt: `Planifie une courte révision de fractions pour ${childName}` }],
+  };
+
+  return { title: "Oui, je peux vous guider", body: "Dites-moi ce que vous voulez comprendre : une progression, une séance, une échéance ou un nouveau devoir. Je répondrai avec les faits disponibles, puis je vous proposerai une prochaine action concrète.", sources: ["Contexte familial autorisé"], action: "Proposer la semaine", followUps: [{ label: "Analyser la progression", prompt: `Résume la progression de ${childName}` }, { label: "Analyser une séance", prompt: `Analyse la dernière séance de ${childName}` }, { label: "Planifier la semaine", prompt: "Que travailler cette semaine ?" }] };
 }
