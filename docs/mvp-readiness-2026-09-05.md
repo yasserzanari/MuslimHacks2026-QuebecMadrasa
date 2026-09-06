@@ -83,6 +83,16 @@ L’interface affiche les outils, mais le serveur doit rester la seule couche qu
 - Le parent choisit l’enfant avant toute création.
 - La voix, l’avatar et la vraie génération externe restent hors MVP de demain.
 
+## Vérification finale du MVP
+
+- `npm run typecheck` : réussi.
+- `npm test -- --runInBand` : 89 tests réussis.
+- `npm run test:e2e` : 11 tests navigateur réussis, dont 2 scénarios Assistant IA.
+- Smoke test HTTP : toutes les routes applicatives et dynamiques principales répondent `200`.
+- Build de production : `npm run build` réussi; 25 pages sont générées.
+
+Les boutons de navigation principaux ne pointent plus vers des ancres mortes dans les parcours parent cours, plan et budget. Le détail d’un cours renvoie maintenant vers le plan et la vue élève.
+
 ## Ce qui reste après la présentation
 
 1. Remplacer les réponses mockées par un fournisseur IA côté serveur.

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { matchFinancialAid, schoolServiceCenters, servicesForCss, type FamilyProfile } from "@/src/domain/financial-aid";
 
-const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "#"], ["◌", "Communauté", "/parent/communaute"], ["▤", "Portfolio", "#"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget / Services gratuits", "/parent/budget"]];
+const nav = [["⌂", "Accueil", "/parent"], ["☷", "Plan de la semaine", "/parent/plan"], ["▣", "Cours", "/parent/cours"], ["✦", "Assistant IA", "/parent/assistant"], ["◌", "Communauté", "/parent/communaute"], ["◫", "Parcours Québec", "/parent/parcours-quebec"], ["$", "Budget / Services gratuits", "/parent/budget"]];
 const initial: FamilyProfile = { province: "QC", cssId: "montreal", familyStatus: "couple", annualIncome: 60000, children: [{ age: 10, disabilityTaxCredit: false }], workingOrStudying: true, childcarePaid: false, homeschoolType: "home" };
 
 export default function BudgetPage() {
