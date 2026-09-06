@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import StudentNav from "@/components/student/StudentNav";
-import { courses } from "@/src/domain/course-catalog";
+import { courses, localizeCourses } from "@/src/domain/course-catalog";
 import type { SkillProgress } from "@/src/domain/portfolio";
 
 type Locale = "fr" | "en";
@@ -72,7 +72,7 @@ export default function StudentProgressPage() {
 
         <section className="panel-card progress-panel">
           <span className="panel-kicker">{t.subjects}</span>
-          {courses.map((course) => (
+          {localizeCourses(locale).map((course) => (
             <div className="progress-row" key={course.id}>
               <span className={`student-v2-subject-icon ${course.color}`}>{course.icon}</span>
               <div>

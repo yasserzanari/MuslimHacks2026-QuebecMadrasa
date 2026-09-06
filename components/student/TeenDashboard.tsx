@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { courses } from "@/src/domain/course-catalog";
+import { localizeCourses } from "@/src/domain/course-catalog";
 
 type Locale = "fr" | "en";
 
@@ -99,7 +99,7 @@ export default function TeenDashboard({ locale }: { locale: Locale }) {
 
         <section className="panel-card teen-card">
           <div className="teen-card-head"><strong>📈 {t.progress}</strong><Link className="teen-link" href="/student/progression">{t.detail}</Link></div>
-          {courses.slice(0, 4).map((course) => (
+          {localizeCourses(locale).slice(0, 4).map((course) => (
             <div className="teen-progress" key={course.id}>
               <span className={`student-v2-subject-icon ${course.color}`}>{course.icon}</span>
               <div>
