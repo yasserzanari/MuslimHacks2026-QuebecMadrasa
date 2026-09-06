@@ -21,6 +21,24 @@
 @media(max-width:850px){.live-main,.tutor-live-main{padding:22px 18px}.live-hero-card,.live-content-grid,.tutor-live-grid,.progress-layout{grid-template-columns:1fr}.live-lobby-illustration{min-height:150px}.games-grid{grid-template-columns:repeat(2,1fr)}.tutor-live-sidebar{display:none!important}.tutor-kpi-row{flex-wrap:wrap}.tutor-end-button{margin-left:0}.tutor-validation{display:block}.tutor-validation-actions{justify-items:start;margin-top:15px}.live-mini-game,.games-live-banner,.progress-recommendation{align-items:flex-start;flex-wrap:wrap}.live-game-pills{flex-wrap:wrap}.games-live-banner .student-v2-primary,.progress-recommendation .student-v2-primary{margin-left:0}}
 @media(max-width:520px){.live-progress b{display:block;margin:5px 0 0}.live-hero-card,.live-ticket-card,.live-activity-card,.live-people-card,.tutor-stage-card,.tutor-roster-card{padding:21px}.games-grid{grid-template-columns:1fr}.progress-hero,.games-hero{display:block;padding:24px}.progress-ring{margin-top:20px}.tutor-kpi-row>div{min-width:calc(50% - 13px)}}
 .live-shell { display:flex; }
+.student-live-shell { background:#fffdf5; }
+.student-live-shell .live-main { background:#fffdf5; }
+.student-live-shell .live-topbar { padding-bottom:18px; border-bottom:1px solid #e2e8df; }
+.student-live-shell .live-topbar h1 { font-size:clamp(36px,5vw,55px); }
+.student-live-shell .live-progress { background:#e7f2e7; }
+.student-live-shell .live-activity-card { background:#fff; box-shadow:0 14px 30px rgba(23,74,59,.07); }
+.student-live-shell .live-activity-card h2 { max-width:730px; margin:16px auto 10px; text-align:center; }
+.student-live-shell .live-activity-card > p { margin:0 auto; text-align:center; }
+.student-live-shell .live-choice-grid { grid-template-columns:repeat(3,1fr); }
+.student-live-shell .live-choice-grid button { min-height:78px; justify-content:center; gap:18px; border:2px solid #d4e1d7; background:#f9fcf8; box-shadow:0 5px 0 #e2ebe3; font-family:Georgia,serif; font-size:20px; }
+.student-live-shell .live-choice-grid button span { display:none; }
+.student-live-shell .live-people-card { position:relative; overflow:hidden; color:#174a3b; background:linear-gradient(160deg,#f1fff0,#e6f7e8); box-shadow:0 14px 30px rgba(23,74,59,.08); }
+.student-live-shell .live-people-card::before { content:"✦  Tuteur IA  ·  Je suis là pour t’aider"; display:block; margin-bottom:18px; padding:12px 13px; border-radius:12px; color:#174a3b; background:#fff; font-size:11px; font-weight:900; }
+.student-live-shell .live-people-card::after { content:"✦"; position:absolute; top:72px; right:26px; display:grid; place-items:center; width:54px; height:54px; border:8px solid #fff; border-radius:46% 46% 42% 42%; color:#8af0b6; background:#0f5441; box-shadow:0 8px 0 #8fcea1; font-size:22px; }
+.student-live-shell .live-people-card h3 { font-size:23px; }
+.student-live-shell .live-people-list { padding-top:15px; border-top:1px solid #cfe5d3; }
+.student-live-shell .live-people-list > div { padding:8px; border-radius:12px; background:rgba(255,255,255,.58); }
+.student-live-shell .live-primary { display:block; margin:21px auto 0; }
 
 /* Real public landing page: semantic HTML, only the family illustration is an image. */
 .real-landing { min-height: 100vh; color: var(--ink); background: #f4fbf1; overflow: hidden; }
