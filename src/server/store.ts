@@ -6,6 +6,15 @@ import type { StudentLesson } from "@/src/domain/learning-records";
 import type { TutorSessionState } from "@/src/domain/ai-tutor-session";
 import { DEMO_FAMILY, DEMO_LESSON } from "@/src/server/demo-data";
 
+export interface CoursePlanItem {
+  id: string;
+  courseId: string;
+  childId: string;
+  title: string;
+  addedAt: string;
+  status: "planned" | "started" | "completed";
+}
+
 /**
  * Local persistence adapter.
  *
@@ -43,6 +52,7 @@ interface StoreShape {
   creditsByFamily: Map<string, number>;
   accessLog: AccessLogEntry[];
   escalations: Escalation[];
+  coursePlan: Map<string, CoursePlanItem>;
 }
 
 const STORE_KEY = Symbol.for("madrasa.quebec.local-store");
@@ -59,6 +69,7 @@ function createStore(): StoreShape {
     creditsByFamily: new Map([[DEMO_FAMILY.id, DEMO_FAMILY.creditsAvailable]]),
     accessLog: [],
     escalations: [],
+    coursePlan: new Map(),
   };
 }
 
@@ -198,4 +209,16 @@ export function recordEscalation(escalation: Escalation): Escalation {
 export function listEscalations(studentId?: string): Escalation[] {
   const all = getStore().escalations;
   return studentId ? all.filter((item) => item.studentId === studentId) : [...all];
+}
+
+/* --------------------------------------------------------- course planning */
+
+export function saveCoursePlanItem(item: CoursePlanItem): CoursePlanItem {
+  getStore().coursePlan.set(item.id, item);
+  return item;
+}
+
+export function listCoursePlanItems(childId?: string): CoursePlanItem[] {
+  const items = Array.from(getStore().coursePlan.values());
+  return childId ? items.filter((item) => item.childId === childId) : items;
 }

@@ -26,6 +26,7 @@ import type { GenerationJob } from "@/src/domain/ai-generation-job";
 import type { DocumentWarning, HomeworkDocument } from "@/src/domain/ai-homework-document";
 import { dictionaryFor, interpolate } from "@/src/i18n/ai-dictionary";
 import { DEFAULT_LOCALE, formatDateTime, type Locale } from "@/src/i18n/locale";
+import { ParentSidebar } from "@/app/parent/parent-sidebar";
 
 /**
  * The tools a parent, a tutor or a group educator uses to make the AI generate homework.
@@ -293,28 +294,8 @@ export function HomeworkStudio({
   }
 
   return (
-    <main className="app-shell">
-      <aside className="sidebar">
-        <Link className="brand" href="/">
-          <img
-            className="sidebar-logo-image"
-            src="/ui/logo-madrasa-quebec.png"
-            alt="Madrasa Québec Network"
-          />
-        </Link>
-        <div className="side-label">{locale === "fr" ? "Famille" : "Family"}</div>
-        {NAV_ITEMS.map((item) => (
-          <Link
-            key={item.href + item.labelFr}
-            className={`side-link ${item.href === "/parent/assistant" ? "active" : ""}`}
-            href={item.href}
-          >
-            <span>{item.icon}</span>
-            <span>{locale === "fr" ? item.labelFr : item.labelEn}</span>
-          </Link>
-        ))}
-        <div className="sidebar-bottom">{t.common.aiDraftBadge}</div>
-      </aside>
+    <main className="parent-assistant-shell">
+      <ParentSidebar active="assistant" />
 
       <section className="workspace">
         <div className="workspace-top">

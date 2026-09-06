@@ -1,0 +1,34 @@
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ParentSidebar } from "@/app/parent/parent-sidebar";
+import { getCourse } from "@/src/domain/course-catalog";
+
+export default function CourseDetailPage({ params }: { params: { courseId: string } }) {
+  const course = getCourse(params.courseId);
+  if (!course) notFound();
+
+  return (
+    <main className="courses-shell courses-reference-shell">
+      <ParentSidebar active="courses" />
+      <section className="courses-workspace detail-workspace">
+        <Link href="/parent/cours" className="back-link">‹ &nbsp; Retour aux cours</Link>
+        <div className="detail-hero">
+          <div className={`course-visual large ${course.color}`}><span>{course.icon}</span></div>
+          <div>
+            <span className={`course-tag ${course.color}`}>{course.category} · {course.badge}</span>
+            <h1>{course.title}</h1>
+            <p className="detail-level">{course.level} · {course.duration}</p>
+            <p className="detail-description">{course.description}</p>
+            <div className="detail-actions"><Link className="detail-primary" href="/parent/cours">Assigner à un enfant</Link><Link className="detail-secondary" href="/parent/plan">Ajouter au plan</Link></div>
+          </div>
+        </div>
+        <div className="detail-grid">
+          <section className="detail-panel"><div className="panel-kicker">Objectif pédagogique</div><h2>{course.objective}</h2><div className="detail-progress"><div><span>Progression actuelle d’Amine</span><b>{course.progress} %</b></div><div className="bar"><i style={{ width: `${course.progress}%` }} /></div></div></section>
+          <section className="detail-panel"><div className="panel-kicker">Parcours de la leçon</div><ol>{course.modules.map((module, index) => <li key={module}><span>{index + 1}</span><div><strong>{module}</strong><small>{index === 0 ? "Introduction · 5 min" : index === course.modules.length - 1 ? "Défi · 5 min" : "Activité guidée · 8 min"}</small></div></li>)}</ol></section>
+        </div>
+        <section className="tutor-preview"><div className="tutor-avatar">✦</div><div><span className="panel-kicker">Tuteur IA élève</span><h2>Il guidera le raisonnement, pas la réponse.</h2><p>Question de départ : « {course.studentPrompt} »</p></div><Link href={`/student/cours/${course.id}`} className="course-open">Voir la vue élève ›</Link></section>
+      </section>
+    </main>
+  );
+}
+
