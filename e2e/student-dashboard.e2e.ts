@@ -1,18 +1,18 @@
 import { expect, test } from "@playwright/test";
 
-test("young student dashboard has a clear, working next action", async ({ page }) => {
+test("senior student workspace guides a math problem and supports the AI tutor", async ({ page }) => {
   await page.goto("/student");
-  await expect(page.getByRole("heading", { name: "Bonjour Yasmine" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Une mission claire, puis une petite victoire." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Comprendre avant de calculer." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Le billet de cinéma" })).toBeVisible();
 
-  await page.getByRole("link", { name: /Continuer le cours/ }).click();
-  await expect(page).toHaveURL(/\/student\/cours\/fractions$/);
-  await page.goBack();
+  await page.getByLabel("Message au tuteur IA").fill("Je veux un indice");
+  await page.getByRole("button", { name: "Envoyer" }).click();
+  await expect(page.locator(".senior-chat-message.ai").last()).toContainText("Indice 1");
 
-  await page.getByRole("link", { name: /Jouer et apprendre/ }).click();
-  await expect(page).toHaveURL(/\/student\/jeux$/);
-  await page.goBack();
+  await page.locator("#answer").fill("24");
+  await page.getByRole("button", { name: /Vérifier ma réponse/ }).click();
+  await expect(page.getByText("Bien joué — ton modèle est correct.")).toBeVisible();
 
-  await page.getByRole("button", { name: "Demander un devoir personnalisé" }).click();
-  await expect(page.getByRole("button", { name: /Prêt en quelques secondes/ })).toBeVisible();
+  await page.getByRole("button", { name: "Voir un indice" }).click();
+  await expect(page.getByText("Commence par enlever le prix du maïs soufflé.")).toBeVisible();
 });

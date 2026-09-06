@@ -1,22 +1,64 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { courses } from "@/src/domain/course-catalog";
+import { FormEvent, useState } from "react";
+
+type ChatMessage = { role: "ai" | "student"; text: string };
+
+const steps = [
+  { label: "Comprendre", caption: "Repérer les données", done: true },
+  { label: "Modéliser", caption: "Choisir l’équation", done: false },
+  { label: "Résoudre", caption: "Calculer et vérifier", done: false },
+];
 
 export default function StudentPage() {
-  const [locale, setLocale] = useState<"fr" | "en">("fr");
-  const [generated, setGenerated] = useState(false);
-  const fr = locale === "fr";
-  const t = fr ? { today: "Aujourd’hui, on apprend", title: "Une mission claire, puis une petite victoire.", intro: "Commence par ton cours de mathématiques. Tu peux demander un indice quand tu bloques.", mission: "Mission du jour", continue: "Continuer le cours", week: "Ma semaine", help: "Ton aide IA", ask: "Demander un devoir personnalisé", ready: "Prêt en quelques secondes" } : { today: "Today, we learn", title: "One clear mission, then a small win.", intro: "Start with your math lesson. You can ask for a hint whenever you are stuck.", mission: "Today’s mission", continue: "Continue lesson", week: "My week", help: "Your AI help", ask: "Ask for a custom assignment", ready: "Ready in seconds" };
+  const [answer, setAnswer] = useState("");
+  const [feedback, setFeedback] = useState("");
+  const [hint, setHint] = useState(0);
+  const [chat, setChat] = useState<ChatMessage[]>([
+    { role: "ai", text: "Je suis là pour t’aider à raisonner. Qu’est-ce que tu sais déjà dans ce problème ?" },
+  ]);
+  const [chatInput, setChatInput] = useState("");
 
-  async function requestAssignment() {
-    setGenerated(false);
-    await fetch("/api/generation-jobs", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: "exercises", childId: "yasmine", requestText: fr ? "Créer un devoir de révision adapté aux objectifs de la semaine" : "Create a revision assignment adapted to this week’s goals" }) });
-    setGenerated(true);
+  function checkAnswer(event: FormEvent) {
+    event.preventDefault();
+    if (!answer.trim()) return;
+    setFeedback(answer.trim() === "24" ? "Bien joué — ton modèle est correct." : "Pas encore. Vérifie d’abord quelle quantité représente x.");
+  }
+
+  function askTutor(text = chatInput) {
+    const clean = text.trim();
+    if (!clean) return;
+    setChat((current) => [...current, { role: "student", text: clean }, { role: "ai", text: clean.toLowerCase().includes("indice") ? "Indice 1 : commence par écrire ce que représente le nombre 6 dans l’énoncé. Ensuite, demande-toi quelle opération relie 6 à x." : "Bonne question. Regarde les informations connues et essaie de les traduire en une seule phrase mathématique. Je peux te donner un indice si tu veux." }]);
+    setChatInput("");
   }
 
   return (
-    <main className="student-v2-shell min-h-screen bg-[#f3faf5] text-[#17352c]"><aside className="student-v2-sidebar hidden lg:flex"><Link href="/" className="student-v2-logo"><img src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link><span className="student-v2-label">{fr ? "Mon espace" : "My space"}</span><Link className="student-v2-nav active" href="/student">⌂ <span>{fr ? "Aujourd’hui" : "Today"}</span></Link><Link className="student-v2-nav" href="/student/cours">▣ <span>{fr ? "Mes cours" : "My courses"}</span></Link><Link className="student-v2-nav" href="/student/jeux">◈ <span>{fr ? "Jouer et apprendre" : "Play and learn"}</span></Link><Link className="student-v2-nav" href="/student/progression">✦ <span>{fr ? "Ma progression" : "My progress"}</span></Link><div className="student-v2-sidebar-help">{fr ? "Besoin d’aide ?" : "Need help?"}<br /><small>{fr ? "Ton tuteur t’aide à réfléchir." : "Your tutor helps you think."}</small></div></aside><section className="student-v2-main"><header className="student-v2-top"><div><p className="student-v2-kicker">{fr ? "Espace élève · mardi 8 septembre" : "Student space · Tuesday, September 8"}</p><h1>{fr ? "Bonjour Yasmine" : "Hello Yasmine"} <span>👋</span></h1></div><div className="flex items-center gap-2"><button className="student-v2-locale" onClick={() => setLocale(fr ? "en" : "fr")}>{fr ? "EN" : "FR"}</button><div className="student-v2-profile"><span>Y</span><b>{fr ? "Mon profil" : "My profile"}</b></div></div></header><section className="student-v2-hero"><div><p className="student-v2-kicker">{t.today}</p><h2>{t.title}</h2><p>{t.intro}</p><div className="mt-6 flex flex-wrap gap-3"><Link href="/student/cours/fractions" className="student-v2-primary">{t.continue} <span>→</span></Link><Link href="/student/cours" className="student-v2-ghost">{fr ? "Voir tous les cours" : "View all courses"}</Link></div></div><div className="student-v2-mission"><span>{t.mission} · 15 min</span><strong>Fractions</strong><small>{fr ? "Comparer deux fractions" : "Compare two fractions"}</small><div className="student-v2-progress"><i style={{ width: "60%" }} /></div><em>60%</em></div></section><div className="student-v2-grid"><section className="student-v2-panel"><div className="student-v2-panel-head"><div><p className="student-v2-kicker">{t.week}</p><h2>{fr ? "Les prochaines victoires" : "Your next wins"}</h2></div><Link href="/student/cours" className="student-v2-link">{fr ? "Tout voir" : "View all"} →</Link></div><div className="student-v2-subjects">{courses.slice(0, 4).map((course) => <Link href={`/student/cours/${course.id}`} className="student-v2-subject" key={course.id}><span className={`student-v2-subject-icon ${course.color}`}>{course.icon}</span><span><b>{course.title}</b><small>{course.objective}</small></span><strong>{course.progress}%</strong></Link>)}</div></section><aside className="student-v2-ai"><div className="student-v2-ai-orb">✦</div><p className="student-v2-kicker">{t.help}</p><h2>{fr ? "Tu bloques ? On va trouver une piste." : "Stuck? Let’s find a path."}</h2><p>{fr ? "Écris ou parle à ton tuteur. Il te posera d’abord une question pour t’aider à raisonner." : "Write or speak to your tutor. It will ask a question first to help you reason."}</p><Link href="/student/cours/fractions" className="student-v2-ai-link">{fr ? "Ouvrir le tuteur" : "Open tutor"} →</Link></aside></div><section className="student-v2-create"><div><span className="student-v2-create-icon">✦</span><div><p className="student-v2-kicker">{fr ? "Assistant de travail" : "Study assistant"}</p><h2>{t.ask}</h2><p>{fr ? "L’IA prépare un brouillon que tu peux ensuite travailler avec ton parent." : "The AI prepares a draft that you can review with your parent."}</p></div></div><button className="student-v2-primary" onClick={requestAssignment}>{generated ? `✓ ${t.ready}` : t.ask}</button></section></section></main>
+    <main className="senior-student-shell">
+      <aside className="senior-student-sidebar">
+        <Link href="/" className="senior-student-brand"><img src="/ui/logo-madrasa-quebec.png" alt="Madrasa Québec Network" /></Link>
+        <div className="senior-student-space-label">MON ESPACE</div>
+        <Link className="senior-student-nav" href="/student">⌂ <span>Aujourd’hui</span></Link>
+        <Link className="senior-student-nav active" href="/student/cours">▣ <span>Mes travaux</span><b>1</b></Link>
+        <Link className="senior-student-nav" href="/student/jeux">◈ <span>Défis rapides</span></Link>
+        <Link className="senior-student-nav" href="/student/progression">✦ <span>Ma progression</span></Link>
+        <div className="senior-student-sidebar-bottom"><span>💡</span><div><strong>Besoin d’un coup de main ?</strong><small>Ton tuteur t’aide à réfléchir, étape par étape.</small></div></div>
+      </aside>
+
+      <section className="senior-student-main">
+        <header className="senior-student-header"><div><Link href="/student/cours" className="senior-back">← Mes travaux</Link><p className="senior-kicker">MATHÉMATIQUES · PROBLÈME GUIDÉ</p><h1>Comprendre avant de calculer.</h1></div><div className="senior-header-profile"><button aria-label="Changer de langue">FR</button><span>Y</span><div><strong>Yasmine</strong><small>2e secondaire</small></div><b>⌄</b></div></header>
+
+        <div className="senior-student-progress"><div><span>Travail 2 sur 4</span><strong>Problèmes algébriques</strong></div><div className="senior-progress-track"><i style={{ width: "42%" }} /></div><span>42%</span></div>
+
+        <div className="senior-workspace-grid">
+          <section className="senior-problem-column">
+            <div className="senior-problem-card"><div className="senior-problem-top"><span className="senior-subject-pill">∑ Algèbre</span><span>⏱ 20 min</span></div><h2>Le billet de cinéma</h2><p className="senior-problem-text">Yasmine achète 3 billets de cinéma et un sac de maïs soufflé pour <strong>42 $</strong>. Le sac coûte <strong>6 $</strong>. Combien coûte un billet ?</p><div className="senior-equation"><span>3 billets</span><b>+</b><span>6 $</span><b>=</b><strong>42 $</strong></div><div className="senior-step-heading"><div><span className="senior-kicker">ÉTAPE 2 · À TOI</span><h3>Quelle équation représente la situation ?</h3></div><span className="senior-step-count">2 / 3</span></div><div className="senior-step-list">{steps.map((step, index) => <div className={`senior-step ${step.done ? "done" : index === 1 ? "current" : ""}`} key={step.label}><span>{step.done ? "✓" : index + 1}</span><div><strong>{step.label}</strong><small>{step.caption}</small></div>{index === 1 && <b>En cours</b>}</div>)}</div><div className="senior-answer-box"><label htmlFor="answer">Écris la valeur de x</label><form onSubmit={checkAnswer}><div className="senior-answer-input"><span>x =</span><input id="answer" value={answer} onChange={(event) => setAnswer(event.target.value)} placeholder="ta réponse" inputMode="numeric" /><span>$</span></div><button className="senior-primary" type="submit">Vérifier ma réponse <span>→</span></button></form>{feedback && <p className={answer.trim() === "24" ? "answer-success" : "answer-help"}>{feedback}</p>}</div><div className="senior-hint-row"><span>🔎</span><div><strong>Besoin d’un indice ?</strong><small>{hint === 0 ? "Un indice sera révélé progressivement." : hint === 1 ? "Commence par enlever le prix du maïs soufflé." : "42 − 6 = 36. Que faire ensuite avec 36 ?"}</small></div><button onClick={() => setHint((current) => Math.min(2, current + 1))} disabled={hint >= 2}>{hint >= 2 ? "Indice complet" : "Voir un indice"}</button></div></div>
+            <div className="senior-bottom-nav"><Link href="/student/cours">← Retour aux travaux</Link><span>Ta réponse est sauvegardée automatiquement</span><button onClick={() => { setAnswer(""); setFeedback(""); setHint(0); }}>Recommencer ↻</button></div>
+          </section>
+
+          <aside className="senior-tutor-card"><div className="senior-tutor-header"><div className="senior-tutor-orb">✦</div><div><span className="senior-kicker">TUTEUR IA</span><h2>On réfléchit ensemble</h2></div><span className="senior-online"><i /> En ligne</span></div><div className="senior-chat"><div className="senior-chat-note">Le tuteur pose des questions et donne des indices. Il ne fait pas le travail à ta place.</div>{chat.map((message, index) => <div className={`senior-chat-message ${message.role}`} key={`${message.role}-${index}`}><span>{message.role === "ai" ? "✦" : "Y"}</span><p>{message.text}</p></div>)}</div><div className="senior-suggestions"><span>Essaie une question</span><button onClick={() => askTutor("Je veux un indice")}>💡 Donne-moi un indice</button><button onClick={() => askTutor("Je ne comprends pas l’équation")}>🤔 Je bloque sur l’équation</button></div><form className="senior-chat-form" onSubmit={(event) => { event.preventDefault(); askTutor(); }}><input value={chatInput} onChange={(event) => setChatInput(event.target.value)} placeholder="Écris au tuteur…" aria-label="Message au tuteur IA" /><button type="submit" aria-label="Envoyer">↑</button></form><div className="senior-tutor-footer">🛡️ Ton travail reste privé · <Link href="/parent">Voir par mon parent</Link></div></aside>
+        </div>
+      </section>
+    </main>
   );
 }
