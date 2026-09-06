@@ -33,7 +33,7 @@ Exemple : au lieu de répondre à un problème de fractions, il demande « Quell
 
 ## Extension : aide en classe de groupe
 
-Pour les cours qui nécessitent la discussion, le tuteur peut fonctionner dans une classe collaborative. Il pose une question commune, distribue les tours de parole, reformule les idées et prépare un résumé ou un mini-jeu après la session. La classe collaborative et ses règles de sécurité sont décrites dans `12-classes-collaboratives.md`.
+Pour les cours qui nécessitent la discussion, le tuteur peut fonctionner dans une classe collaborative. Il pose une question commune, distribue les tours de parole, reformule les idées et prépare un résumé ou un mini-jeu après la session. La classe collaborative et ses règles de sécurité sont décrites dans `12-classes-collaboratives.md`, et le tableau de bord du tuteur qui l'anime dans `13-tableau-de-bord-tuteur.md`.
 
 ## Garde-fous
 

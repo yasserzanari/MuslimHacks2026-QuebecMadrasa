@@ -4,6 +4,8 @@
 
 Certaines matières sont mieux comprises en discutant : langues, sciences, histoire, résolution de problèmes, présentation orale et projets. La plateforme doit donc compléter les leçons individuelles par des rencontres de petit groupe encadrées.
 
+Le tableau de bord du tuteur qui anime ces sessions est spécifié dans `13-tableau-de-bord-tuteur.md`.
+
 ## Formats
 
 - `Table ronde` : chaque élève se présente et répond à une question de départ;

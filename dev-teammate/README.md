@@ -39,6 +39,7 @@ Lire :
 - `docs/architecture/04-securite-et-donnees.md`
 - `docs/plan/services/04-tuteur-ia-eleve.md`
 - `docs/plan/services/12-classes-collaboratives.md`
+- `docs/plan/services/13-tableau-de-bord-tuteur.md`
 - `assets/ui/12-classe-collaborative.png`
 - `assets/ui/13-classe-collaborative-eleve.png`
 

@@ -13,6 +13,8 @@ Un prototype local de classe en petit groupe : objectif au centre, participants 
 - **élève** : activité, son prochain tour, bouton pour demander la parole, texte/voix, indice et défi;
 - **tuteur** : présence, objectif, activité, modération, relances, génération de notes et validation du résumé.
 
+La vue tuteur est spécifiée en détail dans `docs/plan/services/13-tableau-de-bord-tuteur.md` : layout, fonctions, contrats de données, états et critères d'acceptation.
+
 ## Première tranche de développement
 
 1. données de session de démo;

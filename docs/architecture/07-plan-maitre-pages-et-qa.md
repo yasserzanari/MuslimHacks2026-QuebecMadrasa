@@ -49,7 +49,7 @@ Construire une plateforme bilingue français/anglais où chaque page reprend la 
 | P13 | Espace élève 13+ | élève | objectifs, échéances, portfolio, aide | continuer, planifier, demander aide | `10-espace-eleve-13-plus.png` |
 | P14 | Leçon + Tuteur IA | élève | objectif, exercice, tentatives, indices | écrire, parler, demander indice, répondre | `11-tuteur-ia-eleve.png` |
 | P15 | Classe collaborative élève | élève | session, participants, tour, activité | demander parole, répondre, mini-jeu | `13-classe-collaborative-eleve.png` |
-| P16 | Classe collaborative tuteur | tuteur | présence, activité, modération, notes | ouvrir salle, donner parole, valider notes | `12-classe-collaborative.png` |
+| P16 | Classe collaborative tuteur | tuteur | présence, activité, modération, notes | ouvrir salle, donner parole, valider notes | `12-classe-collaborative.png`, service 13 |
 | P17 | Paramètres / sécurité | parent | permissions, consentements, rétention | modifier, exporter, supprimer, signaler | service 10 |
 
 ## Interconnexion des pages
